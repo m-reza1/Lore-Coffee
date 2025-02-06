@@ -1,0 +1,18 @@
+[
+    {
+        "id": 1,
+        "categoryName": "Americano"
+    },
+    {
+        "id": 2,
+        "categoryName": "Espresso"
+    },
+    {
+        "id": 3,
+        "categoryName": "Cappuccino"
+    },
+    {
+        "id": 4,
+        "categoryName": "Macchiato"
+    }
+]

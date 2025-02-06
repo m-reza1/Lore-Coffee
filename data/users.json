@@ -1,0 +1,23 @@
+[
+    {
+        "id": 1,
+        "userName": "lgreves0",
+        "email": "gkilkenny0@pen.io",
+        "password": "admin123",
+        "role": "Admin"
+    },
+    {
+        "id": 2,
+        "userName": "nbryett1",
+        "email": "ragge1@nifty.com",
+        "password": "user12345",
+        "role": "User"
+    },
+    {
+        "id": 3,
+        "userName": "gkneaphsey2",
+        "email": "follis2@tmall.com",
+        "password": "user67890",
+        "role": "User"
+    }
+]
