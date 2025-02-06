@@ -64,7 +64,7 @@ class userController {
 
             // console.log(user);
             
-            const isValidPassword = bcrypt.compareSync(password, user.dataValues.password);
+            const isValidPassword = bcrypt.compareSync(password, user.password);
 
             // console.log(isValidPassword);
             
@@ -96,7 +96,7 @@ class userController {
     static async menu(req, res) {
         try {
 
-            res.render('menu')
+            // res.render('menu')
         } catch (err) {
             console.log(err);
             res.send(err)
