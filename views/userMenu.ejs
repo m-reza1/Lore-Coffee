@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lore Coffee</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100">
+    <!-- Header -->
+    <header class="bg-white shadow-md sticky top-0 z-10">
+        <div class="container mx-auto flex justify-between items-center p-4">
+            <h1 class="text-xl font-bold">Lore Coffee</h1>
+            <nav class="hidden md:flex space-x-6">
+                <a href="/" class="hover:text-gray-500">Home</a>
+                <a href="/menu" class="hover:text-gray-500">Menu</a>
+                <a href="/order" class="hover:text-gray-500">Order</a>
+                <a href="/profile" class="hover:text-gray-500">Profile</a>
+                <a href="/invoice" class="hover:text-gray-500">Invoice</a>
+            </nav>
+            <button class="md:hidden" id="menu-button">
+                <svg id="menu-icon" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg>
+            </button>
+        </div>
+
+    </header>
+    
+    <!-- Content -->
+    <main class="container mx-auto p-6">
+        <!-- Banner Promo -->
+        <section class="bg-yellow-200 rounded-lg p-6 text-center shadow-md">
+            <h2 class="text-2xl font-bold">Promo Special!</h2>
+            <p class="text-lg mt-2">Dapatkan diskon 20% untuk semua varian kopi hingga akhir bulan ini!</p>
+        </section>
+
+        <!-- Search bar -->
+        <hr>
+        <form action="/menu" method="get">
+            <input type="text" name="itemName" id="itemName" placeholder="Search by Name">
+
+            <button type="submit">Search</button>
+            <button>
+                <a href="/menu">Reset Search</a>
+            </button>
+        </form>
+
+        </section>
+
+        <!-- Filter -->
+        <div>
+            <a href="/menu"><button>All</button></a>
+        
+            <button>
+                <a href="/menu?categoryName=Americano">Americano</a>
+            </button>
+
+            <button>
+                <a href="/menu?categoryName=Espresso">Espresso</a>
+            </button>
+        
+            <button>
+                <a href="/menu?categoryName=Cappuccino">Cappuccino</a>
+            </button>
+        
+            <button>
+                <a href="/menu?categoryName=Macchiato">Macchiato</a>
+            </button>
+        </div>
+        
+
+        <!-- Card All Menu -->
+    </main>
+</body>
+</html>
+
+<body>
+    <h1>Menu</h1>
+
+    <%- include('partials/nav') %> <br>
+    
+    <hr>
+    <table border="1">
+        <tr>
+            <th>Image</th>
+            <th>Name</th>
+            <th>Description</th>
+            <th>Price</th>
+            <th>Action</th>
+        </tr>
+
+        <% menus.forEach(el => { %>
+         <tr>
+            <td><img src="<%= el.imageURL %>" alt="<%= el.itemName %>" width="200px"></td>
+            <td><%= el.itemName %></td>
+            <td><%= el.description %></td>
+            <td><%= el.price %></td>
+            <td>
+                <button>
+                    <a href="">Order</a>
+                </button>
+            </td>
+         </tr>
+        <% }) %>
+    </table>
+    
+</body>
+</html>
