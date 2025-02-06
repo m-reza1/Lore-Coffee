@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lore Coffee</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100">
+    <!-- Header -->
+    <header class="bg-white shadow-md sticky top-0 z-10">
+        <div class="container mx-auto flex justify-between items-center p-4">
+            <h1 class="text-xl font-bold">Lore Coffee</h1>
+            <nav class="hidden md:flex space-x-6">
+                <a href="/" class="hover:text-gray-500">Home</a>
+                <a href="/menu" class="hover:text-gray-500">Menu</a>
+                <a href="/order" class="hover:text-gray-500">Order</a>
+                <a href="/profile" class="hover:text-gray-500">Profile</a>
+                <a href="/invoice" class="hover:text-gray-500">Invoice</a>
+            </nav>
+            <button class="md:hidden" id="menu-button">
+                <svg id="menu-icon" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg>
+            </button>
+        </div>
+    </header>
+
+    <main>
+        <%- include('partials/nav') %> <br>
+
+        <h1>Edit Menu</h1>
+        <h3>Please update the form below to edit the menu!</h3>
+
+        <hr>
+        <form action="/menu/edit/<%= menus.id %>" method="post" class="edit-menu-form">
+            <label for="itemName">The Name of The Item?</label><br>
+            <input type="text" name="itemName" id="itemName" value="<%= menus.itemName %>"><br>
+
+            <label for="imageURL">The Photo of The Item?</label><br>
+            <input type="text" name="imageURL" id="imageURL" value="<%= menus.imageURL %>"><br>
+
+            <label for="category">The Category of The Item?</label><br>
+            <select name="categoryId" id="category">
+                <option value="" disabled>Select Category</option>
+                <% categories.forEach(el => { %>
+                    <option value="<%= el.id %>" <%= menus.categoryId === el.id ? 'selected' : '' %>>
+                        <%= el.categoryName %>
+                    </option>
+                <% }) %>
+            </select><br>
+
+            <label for="price">The Price of The Item?</label><br>
+            <input type="number" name="price" id="price" value="<%= menus.price %>"><br>
+
+            <label for="description">The Description of The Item?</label><br>
+            <input type="text" name="description" id="description" value="<%= menus.description %>"><br>
+
+            <div class="form-buttons">
+                <button type="submit" class="btn btn-submit">Update</button>
+                <button>
+                    <a href="/menu" class="btn btn-cancel">Cancel</a>
+                </button>
+            </div>
+        </form>
+    </main>
+</body>
+</html>

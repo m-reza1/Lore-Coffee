@@ -24,62 +24,46 @@
         </div>
 
     </header>
-    
-    <!-- Content -->
-    <main class="container mx-auto p-6">
-        <!-- Banner Promo -->
-        <section class="bg-yellow-200 rounded-lg p-6 text-center shadow-md">
-            <h2 class="text-2xl font-bold">Promo Special!</h2>
-            <p class="text-lg mt-2">Dapatkan diskon 20% untuk semua varian kopi hingga akhir bulan ini!</p>
-        </section>
-
-        <!-- Search bar -->
-        <section class="mt-8 bg-white p-6 rounded-lg shadow-md">
-
-        </section>
-
-        <!-- Filter -->
-
-        <!-- Card All Menu -->
     </main>
 </body>
 </html>
-=======
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Menu</title>
-</head>
+
 <body>
-    <h1>Menu</h1>
-
     <%- include('partials/nav') %> <br>
-    
-    <hr>
-    <table border="1">
-        <tr>
-            <th>Image</th>
-            <th>Nama</th>
-            <th>Deskripsi</th>
-            <th>Harga</th>
-            <th>Action</th>
-        </tr>
 
-        <% menus.forEach(el => { %>
-         <tr>
-            <td><img src="<%= el.imageURL %>" alt="<%= el.itemName %>" width="200px"></td>
-            <td><%= el.itemName %></td>
-            <td><%= el.description %></td>
-            <td><%= el.price %></td>
-            <td>
-                <button>
-                    <a href="">Order</a>
-                </button>
-            </td>
-         </tr>
-        <% }) %>
-    </table>
+    <h1>Add Menu</h1>
+    <h3>Please fill the form below to add a new Menu!</h3>
+
+    <hr>
+    <form action="/menu/add" method="post" class="add-menu-form">
+        <label for="itemName">The Name of The Item?</label><br>
+        <input type="text" name="itemName" id="itemName"><br>
+
+        <label for="imageURL">The Photo of The Item?</label><br>
+        <input type="text" name="imageURL" id="imageURL"><br>
+
+        <label for="category">The Category of The Item?</label><br>
+        <select name="categoryId" id="category">
+            <option value="" selected disabled>Select Category</option>
+            <% categories.forEach(el => { %>
+                <option value="<%= el.id %>"><%= el.categoryName %></option>
+            <% }) %>
+        </select><br>
+
+        <label for="price">The Price of The Item?</label><br>
+        <input type="number" name="price" id="price"><br>
+
+        <label for="description">The Description of The Item?</label><br>
+        <input type="text" name="description" id="description"><br>
+
+        <div class="form-buttons">
+            <button type="submit" class="btn btn-submit">Submit</button>
+
+            <button>
+                <a href="/menu" class="btn btn-cancel">Cancel</a>
+            </button>
+        </div>
+    </form>
     
 </body>
 </html>
