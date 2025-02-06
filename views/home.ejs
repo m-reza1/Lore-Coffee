@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lore Coffee</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100">
+    <!-- Header -->
+    <header class="bg-white shadow-md sticky top-0 z-10">
+        <div class="container mx-auto flex justify-between items-center p-4">
+            <h1 class="text-xl font-bold">Lore Coffee</h1>
+            <nav class="hidden md:flex space-x-6">
+                <a href="/" class="hover:text-gray-500">Home</a>
+                <a href="/menu" class="hover:text-gray-500">Menu</a>
+                <a href="/cart" class="hover:text-gray-500">Cart</a>
+                <a href="/profile" class="hover:text-gray-500">Profile</a>
+                <a href="/invoice" class="hover:text-gray-500">Invoice</a>
+            </nav>
+            <button class="md:hidden" id="menu-button">
+                <svg id="menu-icon" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg>
+            </button>
+        </div>
+    </header>
+    
+    <!-- Content -->
+    <main class="container mx-auto p-6">
+        <!-- Banner Promo -->
+        <section class="bg-yellow-200 rounded-lg p-6 text-center shadow-md">
+            <h2 class="text-2xl font-bold">Promo Special!</h2>
+            <p class="text-lg mt-2">Dapatkan diskon 20% untuk semua varian kopi hingga akhir bulan ini!</p>
+        </section>
+
+        <!-- Artikel -->
+        <section class="mt-8 bg-white p-6 rounded-lg shadow-md">
+            <h2 class="text-xl font-bold">Tentang Lore Coffee</h2>
+            <p class="mt-2 text-gray-700">
+                Lore Coffee adalah tempat terbaik untuk menikmati kopi dengan cita rasa khas. Kami
+                menggunakan biji kopi berkualitas tinggi dan diproses dengan teknik yang telah diwariskan
+                secara turun-temurun.
+            </p>
+        </section>
+    </main>
+</body>
+</html>

@@ -15,14 +15,14 @@ module.exports = {
       quantity: {
         type: Sequelize.INTEGER
       },
-      ItemId: {
+      itemId: {
         type: Sequelize.INTEGER,
         references: {
           model: 'Items',
           key: 'id'
         }
       },
-      UserId: {
+      userId: {
         type: Sequelize.INTEGER,
         references: {
           model: 'Users',
