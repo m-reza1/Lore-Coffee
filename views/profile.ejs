@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f5f5f5;
+            text-align: center;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            width: 40%;
+            margin: 50px auto;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            color: #333;
+        }
+        .card {
+            padding: 20px;
+            border-radius: 10px;
+            background: #ffffff;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+        .profile-photo {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-bottom: 15px;
+            border: 3px solid #007BFF;
+        }
+        .profile-item {
+            margin: 10px 0;
+            font-size: 18px;
+        }
+        .profile-item strong {
+            color: #555;
+        }
+        .edit-btn {
+            display: inline-block;
+            text-decoration: none;
+            background: #007BFF;
+            color: white;
+            padding: 10px 15px;
+            border-radius: 5px;
+            margin-top: 15px;
+            transition: 0.3s;
+        }
+        .edit-btn:hover {
+            background: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <%- include('partials/nav') %> 
+
+    <h1>Profile</h1>
+
+    <div class="container">
+        <% if (profiles.length > 0) { %>
+        <div class="card">
+            <!-- Menampilkan Foto Profil -->
+            <img src="<%= profiles[0].profilePicture ? profiles[0].profilePicture : 'https://t4.ftcdn.net/jpg/05/49/98/39/360_F_549983970_bRCkYfk0P6PP5fKbMhZMIb07mCJ6esXL.jpg' %>" 
+                 alt="Profile Picture" class="profile-photo">
+
+            <div class="profile-item"><strong>User Name:</strong> <%= profiles[0].User.userName %></div>
+            <div class="profile-item"><strong>Profile Name:</strong> <%= profiles[0].profileName %></div>
+            <div class="profile-item"><strong>Phone Number:</strong> <%= profiles[0].phoneNumber %></div>
+            <div class="profile-item"><strong>Email:</strong> <%= profiles[0].User.email %></div>
+            
+            <a href="/profile/edit/<%= profiles[0].id %>" class="edit-btn">Edit Profile</a>
+        </div>
+        <% } else { %>
+        <p>Profile not found</p>
+        <% } %>
+    </div>
+
+</body>
+</html>
