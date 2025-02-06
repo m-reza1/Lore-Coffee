@@ -11,9 +11,12 @@ router.post("/register", userController.saveRegisterForm)
 router.get("/login", userController.loginPage)
 router.post("/login", userController.loginPage)
 
-
-
 // =============
-router.get('/')
+router.get('/', userController.home) //home
+router.get('/invoice', userController.invoice) // invoice
+router.get('/cart', userController.cart) // invoice
+// router.get('/menu',userController.menu)// show all item
+// router.get('/invoice', userController.invoice) // invoice
+// router.get('/profile')
 
 module.exports = router

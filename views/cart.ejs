@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Order Cart - Lore Coffee</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100">
+    <!-- Header -->
+    <header class="bg-white shadow-md sticky top-0 z-10">
+        <div class="container mx-auto flex justify-between items-center p-4">
+            <h1 class="text-xl font-bold text-gray-800">Lore Coffee</h1>
+            <nav class="hidden md:flex space-x-6">
+                <a href="/" class="hover:text-gray-500">Home</a>
+                <a href="/menu" class="hover:text-gray-500">Menu</a>
+                <a href="/order" class="hover:text-gray-500">Order</a>
+                <a href="/profile" class="hover:text-gray-500">Profile</a>
+            </nav>
+            <button class="md:hidden" id="menu-button">
+                <svg id="menu-icon" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg>
+            </button>
+        </div>
+    </header>
+    
+    <!-- Content -->
+    <main class="container mx-auto p-6">
+        <!-- Order Cart Section -->
+        <section class="bg-white p-6 rounded-lg shadow-md">
+            <h2 class="text-2xl font-bold text-gray-800">Shopping Cart</h2>
+            <p class="text-gray-700 mt-2">Here are the items you ordered:</p>
+            
+            <div class="mt-4 space-y-4">
+                <!-- Item 1 -->
+                <div class="flex items-center justify-between bg-gray-50 p-4 rounded-lg shadow">
+                    <div class="flex items-center space-x-4">
+                        <img src="https://source.unsplash.com/50x50/?coffee" alt="Cappuccino" class="rounded-lg">
+                        <div>
+                            <h3 class="text-lg font-semibold">Cappuccino</h3>
+                            <div class="flex items-center space-x-2 mt-1">
+                                <button class="bg-gray-300 w-8 h-8 rounded">-</button>
+                                <span class="text-gray-600 w-6 text-center">2</span>
+                                <button class="bg-gray-300 w-8 h-8 rounded">+</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="flex items-center space-x-4">
+                        <span class="text-lg font-bold">Rp 50.000</span>
+                        <button class="bg-red-500 text-white p-2 rounded">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Item 2 -->
+                <div class="flex items-center justify-between bg-gray-50 p-4 rounded-lg shadow">
+                    <div class="flex items-center space-x-4">
+                        <img src="https://source.unsplash.com/50x50/?latte" alt="Latte" class="rounded-lg">
+                        <div>
+                            <h3 class="text-lg font-semibold">Latte</h3>
+                            <div class="flex items-center space-x-2 mt-1">
+                                <button class="bg-gray-300 w-8 h-8 rounded">-</button>
+                                <span class="text-gray-600 w-6 text-center">1</span>
+                                <button class="bg-gray-300 w-8 h-8 rounded">+</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="flex items-center space-x-4">
+                        <span class="text-lg font-bold">Rp 25.000</span>
+                        <button class="bg-red-500 text-white p-2 rounded">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="mt-6 text-right">
+                <h3 class="text-xl font-bold">Total: Rp 75.000</h3>
+                <a href="/invoice">
+
+                    <button class="mt-4 bg-green-500 text-white px-6 py-2 rounded-lg shadow-md hover:bg-green-600">Checkout</button>
+                </a>
+            </div>
+        </section>
+    </main>
+</body>
+</html>

@@ -12,18 +12,16 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       // define association here
       // An Item belongs to a Category
-      Item.belongsTo(models.Category, {
-        foreignKey: 'CategoryId'
-      });
+      Item.belongsTo(models.Category);
 
       // An Item belongs to a User
       Item.belongsTo(models.User, {
-        foreignKey: 'UserId'
+        foreignKey: 'userId'
       });
 
       // An Item has many Invoices
       Item.hasMany(models.Invoice, {
-        foreignKey: 'ItemId'
+        foreignKey: 'itemId'
       });
     }
   }
@@ -32,8 +30,8 @@ module.exports = (sequelize, DataTypes) => {
     price: DataTypes.INTEGER,
     stock: DataTypes.INTEGER,
     description: DataTypes.STRING,
-    CategoryId: DataTypes.INTEGER,
-    UserId: DataTypes.INTEGER,
+    categoryId: DataTypes.INTEGER,
+    userId: DataTypes.INTEGER,
     imageURL: DataTypes.STRING
   }, {
     sequelize,

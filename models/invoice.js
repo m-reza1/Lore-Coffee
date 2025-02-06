@@ -13,19 +13,19 @@ module.exports = (sequelize, DataTypes) => {
       // define association here
       // An Invoice belongs to a User
       Invoice.belongsTo(models.User, {
-        foreignKey: 'UserId'
+        foreignKey: 'userId'
       });
 
       // An Invoice belongs to an Item
       Invoice.belongsTo(models.Item, {
-        foreignKey: 'ItemId'
+        foreignKey: 'itemId'
       });
     }
   }
   Invoice.init({
     code: DataTypes.STRING,
-    ItemId: DataTypes.INTEGER,
-    UserId: DataTypes.INTEGER
+    itemId: DataTypes.INTEGER,
+    userId: DataTypes.INTEGER
   }, {
     sequelize,
     modelName: 'Invoice',

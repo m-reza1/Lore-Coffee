@@ -13,7 +13,7 @@ module.exports = (sequelize, DataTypes) => {
       // define association here
       // A Category has many Items
       Category.hasMany(models.Item, {
-        foreignKey: 'CategoryId'
+        foreignKey: 'categoryId'
       });
     }
   }
@@ -21,7 +21,7 @@ module.exports = (sequelize, DataTypes) => {
     categoryName: DataTypes.STRING
   }, {
     sequelize,
-    modelName: 'Category',
+    modelName: 'category',
   });
   return Category;
 };
