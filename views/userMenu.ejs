@@ -9,8 +9,17 @@
 </head>
 
 <body class="bg-gray-100">
-    <!-- Header navbar  -->
+    <!-- Header  -->
     <%- include('partials/nav') %>
+
+    <!-- Content -->
+    <main class="container mx-auto p-6">
+        <!-- Banner Promo -->
+        <section class="bg-amber-700 text-white rounded-lg p-6 text-center shadow-md">
+            <h2 class="text-2xl font-bold">Promo Special!</h2>
+            <p class="text-lg mt-2">Dapatkan diskon 20% untuk semua varian kopi hingga akhir bulan ini!</p>
+        </section>
+
         <!-- Notifikasi Toast -->
         <% if (toast) { %>
             <div id="toast-<%= toast.type %>"

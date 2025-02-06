@@ -4,85 +4,39 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Profile</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f5f5f5;
-            text-align: center;
-            margin: 0;
-            padding: 0;
-        }
-        .container {
-            width: 40%;
-            margin: 50px auto;
-            background: white;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
-        }
-        h1 {
-            color: #333;
-        }
-        .card {
-            padding: 20px;
-            border-radius: 10px;
-            background: #ffffff;
-            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
-            text-align: center;
-        }
-        .profile-photo {
-            width: 120px;
-            height: 120px;
-            border-radius: 50%;
-            object-fit: cover;
-            margin-bottom: 15px;
-            border: 3px solid #007BFF;
-        }
-        .profile-item {
-            margin: 10px 0;
-            font-size: 18px;
-        }
-        .profile-item strong {
-            color: #555;
-        }
-        .edit-btn {
-            display: inline-block;
-            text-decoration: none;
-            background: #007BFF;
-            color: white;
-            padding: 10px 15px;
-            border-radius: 5px;
-            margin-top: 15px;
-            transition: 0.3s;
-        }
-        .edit-btn:hover {
-            background: #0056b3;
-        }
-    </style>
+    <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body>
+<body class="bg-gray-100">
     <%- include('partials/nav') %> 
+    <main class="container mx-auto p-6">
 
-    <h1>Profile</h1>
+        <h1 class="text-3xl font-bold text-gray-800 mt-6 text-center">Profile</h1>
 
-    <div class="container">
-        <% if (profiles.length > 0) { %>
-        <div class="card">
-            <!-- Menampilkan Foto Profil -->
-            <img src="<%= profiles[0].profilePicture ? profiles[0].profilePicture : 'https://t4.ftcdn.net/jpg/05/49/98/39/360_F_549983970_bRCkYfk0P6PP5fKbMhZMIb07mCJ6esXL.jpg' %>" 
-                 alt="Profile Picture" class="profile-photo">
+        <hr class="my-6 border-gray-300">
 
-            <div class="profile-item"><strong>User Name:</strong> <%= profiles[0].User.userName %></div>
-            <div class="profile-item"><strong>Profile Name:</strong> <%= profiles[0].profileName %></div>
-            <div class="profile-item"><strong>Phone Number:</strong> <%= profiles[0].phoneNumber %></div>
-            <div class="profile-item"><strong>Email:</strong> <%= profiles[0].User.email %></div>
-            
-            <a href="/profile/edit/<%= profiles[0].id %>" class="edit-btn">Edit Profile</a>
+        <!-- Card -->
+        <div class="bg-white shadow-lg rounded-lg p-6 mt-6 w-11/12 max-w-md mx-auto">
+            <% if (profiles.length > 0) { %>
+            <div class="flex flex-col items-center">
+                <!-- Foto Profil -->
+                <img src="<%= profiles[0].profilePicture ? profiles[0].profilePicture : 'https://t4.ftcdn.net/jpg/05/49/98/39/360_F_549983970_bRCkYfk0P6PP5fKbMhZMIb07mCJ6esXL.jpg' %>" 
+                     alt="Profile Picture" 
+                     class="w-32 h-32 rounded-full border-4 border-blue-500 shadow-md hover:scale-105 transition duration-300">
+
+                <div class="mt-4 text-lg text-gray-700"><strong>User Name:</strong> <%= profiles[0].User.userName %></div>
+                <div class="text-lg text-gray-700"><strong>Profile Name:</strong> <%= profiles[0].profileName %></div>
+                <div class="text-lg text-gray-700"><strong>Phone Number:</strong> <%= profiles[0].phoneNumber %></div>
+                <div class="text-lg text-gray-700"><strong>Email:</strong> <%= profiles[0].User.email %></div>
+
+                <a href="/profile/edit/<%= profiles[0].id %>" 
+                   class="mt-6 bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-6 rounded-lg shadow-md transition duration-300">
+                    Edit Profile
+                </a>
+            </div>
+            <% } else { %>
+            <p class="text-gray-600">Profile not found</p>
+            <% } %>
         </div>
-        <% } else { %>
-        <p>Profile not found</p>
-        <% } %>
-    </div>
-
+    </main>
 </body>
 </html>
