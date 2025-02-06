@@ -12,6 +12,9 @@ router.post("/register", userController.saveRegisterForm)
 router.get("/login", userController.loginPage)
 router.post("/login", userController.loggedIn)
 
+// LOGOUT
+router.get("/logout", userController.logout)
+
 // USER
 router.get('/', userController.home) //home
 router.get('/menu', userController.menu)// show all item
@@ -21,10 +24,16 @@ router.post('/add-to-order', userController.addToOrder);
 router.post('/update-quantity', userController.updateQuantity);
 router.post('/remove-from-order', userController.removeFromOrder);
 router.get('/order', userController.order);
-router.get('/invoice', userController.invoice) // invoice
+// router.get('/invoice', userController.invoice) // invoice
 // router.get('/menu', userController.menu)// show all item
 // router.get('/invoice', userController.invoice) // invoice
 // router.get('/profile')
+
+//test order dan checkout
+router.post('/checkout', userController.checkout);
+
+router.post('/order', userController.checkout); // Proses checkout
+router.get('/invoice', userController.invoice); // Tampilkan invoice
 
 // ADMIN
 // router.get('/', adminController.X);

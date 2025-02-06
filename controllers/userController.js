@@ -52,7 +52,6 @@ class userController {
             res.send(err)
         }
     }
-
     static async loggedIn(req, res) {
         try {
             const { userName, password } = req.body
@@ -85,6 +84,16 @@ class userController {
         }
     }
 
+    static async logout(req, res) {
+        try {
+            req.session.destroy()
+            res.redirect('/')
+        } catch (err) {
+            console.log(err);
+            res.send(err)
+        }
+    }
+
     static async home(req, res) {
         try {
 
@@ -94,6 +103,7 @@ class userController {
             res.send(err)
         }
     }
+
     static async menu(req, res) {
         try {
             const { itemName, categoryName } = req.query;
@@ -143,7 +153,6 @@ class userController {
             res.send(err)
         }
     }
-
     static async addToOrder(req, res) {
         try {
             const { itemId } = req.body;
@@ -227,6 +236,7 @@ class userController {
         try {
             const order = req.session.order || [];
             const total = order.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+
             const toast = req.session.toast;
             delete req.session.toast;
 
@@ -236,6 +246,35 @@ class userController {
                 formatRupiah,
                 toast
             });
+
+        } catch (err) {
+            console.log(err);
+            res.send(err);
+        }
+    }
+
+    static async checkout(req, res) {
+        try {
+            // Ambil data order dari session
+            const order = req.session.order || [];
+
+            if (order.length === 0) {
+                return res.status(400).send("Keranjang belanja kosong");
+            }
+
+            // Simpan invoice ke database
+            const newInvoice = await Invoice.create({
+                userId: req.session.userId, // Pastikan user sudah login
+                total: order.reduce((sum, item) => sum + item.price * item.qty, 0),
+                status: "Paid"
+            });
+
+            // Simpan order sementara ke session agar bisa ditampilkan di invoice
+            req.session.lastOrder = req.session.order; // Simpan order sebelum dihapus
+            req.session.order = []; // Kosongkan keranjang belanja setelah checkout
+
+            // Redirect ke halaman invoice
+            res.redirect(`/invoice?id=${newInvoice.id}`);
         } catch (err) {
             console.log(err);
             res.send(err);
@@ -244,7 +283,80 @@ class userController {
 
     static async invoice(req, res) {
         try {
-            res.render('invoice')
+            const invoiceId = req.query.id; // Ambil ID invoice dari query parameter
+            // ====================================================================
+            const userId = req.session.userId;
+
+            // Dapatkan nama profil pengguna
+            const profile = await Profile.findOne({ where: { userId } });
+            const profileName = profile.profileName;
+
+            // Tanggal saat ini
+            const now = new Date();
+            const options = { year: 'numeric', month: 'long', day: 'numeric' };
+            const formattedDate = now.toLocaleDateString('en-US', options);
+
+            // Generate kode invoice
+            const year = now.getFullYear();
+            const month = String(now.getMonth() + 1).padStart(2, '0');
+            const day = String(now.getDate()).padStart(2, '0');
+            const datePart = `${year}${month}${day}`;
+
+            const hours = String(now.getHours()).padStart(2, '0');
+            const minutes = String(now.getMinutes()).padStart(2, '0');
+            const seconds = String(now.getSeconds()).padStart(2, '0');
+            const timePart = `${hours}${minutes}${seconds}`;
+
+            let categoryLetter = 'A'; // Default
+            const orderItems = req.session.order || [];
+            if (orderItems.length > 0) {
+                const firstItemId = orderItems[0].id;
+                const firstItem = await Item.findByPk(firstItemId, {
+                    include: Category
+                });
+                if (firstItem && firstItem.Category) {
+                    categoryLetter = firstItem.Category.categoryName.charAt(0).toUpperCase();
+                }
+            }
+            const invoiceCode = `${datePart}-${categoryLetter}-${timePart}`;
+
+
+            // Buat entri Invoice untuk setiap item
+            for (const item of orderItems) {
+                await Invoice.create({
+                    code: invoiceCode,
+                    quantity: item.quantity,
+                    itemId: item.id,
+                    userId: userId
+                });
+            }
+            // ====================================================================
+
+            const invoice = await Invoice.findByPk(invoiceId, {
+                include: [{
+                    model: User,
+                    include: [Profile] // Jika ingin menampilkan data profil pengguna
+                }]
+            });
+
+            if (!invoice) {
+                return res.status(404).send('Invoice not found');
+            }
+
+            // Ambil data pesanan dari session atau database (jika disimpan)
+            const order = req.session.lastOrder || [];
+
+            const total = order.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+
+            res.render('invoice', {
+                profileName,
+                date: formattedDate,
+                invoiceCode,
+                orderItems,
+                order,
+                total,
+                formatRupiah
+            });
         } catch (err) {
             console.log(err);
             res.send(err)

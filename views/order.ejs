@@ -125,9 +125,23 @@
                                     class="mt-4 bg-green-500 text-white px-6 py-2 rounded-lg shadow-md hover:bg-green-600">Checkout</button>
                             </a>
                         </div>
-                        <% } %>
-                </section>
-            </main>
+                    <% }) %>
+                <% } else { %>
+                    <p class="text-center py-4 text-gray-500">Your cart is empty</p>
+                <% } %>
+            </div>
+            
+            <% if (order.length > 0) { %>
+                <div class="mt-6 text-right">
+                    <h3 class="text-xl font-bold">Total: <%= formatRupiah(total) %></h3>
+                    <form action="/checkout" method="POST">
+                        <button type="submit" class="mt-4 bg-green-500 text-white px-6 py-2 rounded-lg shadow-md hover:bg-green-600">Checkout</button>
+                    </form>
+                </div>
+            <% } %>
+        </section>
+    </main>
+
 </body>
 <script>
     // Auto-hide toast setelah 3 detik
