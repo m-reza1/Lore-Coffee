@@ -129,22 +129,109 @@ class userController {
             // Ambil semua kategori untuk ditampilkan di filter
             let categories = await Category.findAll();
 
-            res.render("userMenu", { menus, categories, formatRupiah });
+            const toast = req.session.toast;
+            delete req.session.toast;
 
+            res.render("userMenu", {
+                menus,
+                categories,
+                formatRupiah,
+                toast
+            });
         } catch (err) {
             console.log(err);
             res.send(err)
+        }
+    }
+
+    static async addToOrder(req, res) {
+        try {
+            const { itemId } = req.body;
+            const item = await Item.findByPk(itemId);
+
+            if (!req.session.order) {
+                req.session.order = [];
+            }
+
+            const existingItem = req.session.order.find(i => i.id === item.id);
+
+            if (existingItem) {
+                existingItem.quantity++;
+            } else {
+                req.session.order.push({
+                    id: item.id,
+                    itemName: item.itemName,
+                    price: item.price,
+                    imageURL: item.imageURL,
+                    quantity: 1
+                });
+            }
+
+            // Set session untuk toast
+            req.session.toast = {
+                type: 'success',
+                message: 'Item berhasil ditambahkan ke keranjang'
+            };
+
+            res.redirect('/menu');
+        } catch (err) {
+            console.log(err);
+            req.session.toast = {
+                type: 'danger',
+                message: 'Gagal menambahkan item'
+            };
+            res.redirect('/menu');
+        }
+    }
+
+    static async updateQuantity(req, res) {
+        try {
+            const { itemId, action } = req.body;
+
+            const item = req.session.order.find(i => i.id === Number(itemId));
+
+            if (action === 'increase') {
+                item.quantity++;
+            } else if (action === 'decrease') {
+                item.quantity--;
+                if (item.quantity <= 0) {
+                    req.session.order = req.session.order.filter(i => i.id !== Number(itemId));
+                }
+            }
+
+            res.redirect('/order');
+        } catch (err) {
+            console.log(err);
+            res.send(err);
+        }
+    }
+
+    static async removeFromOrder(req, res) {
+        try {
+            const { itemId } = req.body;
+
+            req.session.order = req.session.order.filter(i => i.id !== Number(itemId));
+
+            res.redirect('/order');
+        } catch (err) {
+            console.log(err);
+            res.send(err);
         }
     }
 
     static async order(req, res) {
         try {
-            res.render('order')
+            const order = req.session.order || [];
+
+            const total = order.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+            
+            res.render('order', { order, total, formatRupiah });
         } catch (err) {
             console.log(err);
-            res.send(err)
+            res.send(err);
         }
     }
+
     static async invoice(req, res) {
         try {
             res.render('invoice')
