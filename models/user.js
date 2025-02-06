@@ -13,17 +13,17 @@ module.exports = (sequelize, DataTypes) => {
       // define association here
       // A User has one Profile
       User.hasOne(models.Profile, { 
-        foreignKey: 'UserId' 
+        foreignKey: 'userId' 
       });
 
       // A User has many Items
       User.hasMany(models.Item, { 
-        foreignKey: 'UserId' 
+        foreignKey: 'userId' 
       });
 
       // A User has many Invoices
       User.hasMany(models.Invoice, { 
-        foreignKey: 'UserId' 
+        foreignKey: 'userId' 
       });
     }
   }

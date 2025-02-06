@@ -1,7 +1,7 @@
 const express = require('express')
-const app = express()
 const router =  require('express').Router()
 const userController = require('../controllers/userController')
+const adminController = require('../controllers/adminController')
 
 // REGISTER
 router.get("/register", userController.registerForm)
@@ -14,6 +14,12 @@ router.post("/login", userController.loginPage)
 
 
 // =============
-router.get('/')
+router.get('/', adminController.X);
+router.get('/menu', adminController.getMenu);
+router.get('/profile', adminController.showProfile);
+router.get('/', adminController.X);
+router.get('/', adminController.X);
+router.get('/', adminController.X);
+router.get('/', adminController.X);
 
 module.exports = router

@@ -13,28 +13,27 @@ module.exports = (sequelize, DataTypes) => {
       // define association here
       // An Item belongs to a Category
       Item.belongsTo(models.Category, {
-        foreignKey: 'CategoryId'
+        foreignKey: 'categoryId'
       });
 
       // An Item belongs to a User
       Item.belongsTo(models.User, {
-        foreignKey: 'UserId'
+        foreignKey: 'userId'
       });
 
       // An Item has many Invoices
       Item.hasMany(models.Invoice, {
-        foreignKey: 'ItemId'
+        foreignKey: 'itemId'
       });
     }
   }
   Item.init({
     itemName: DataTypes.STRING,
     price: DataTypes.INTEGER,
-    stock: DataTypes.INTEGER,
     description: DataTypes.STRING,
-    CategoryId: DataTypes.INTEGER,
-    UserId: DataTypes.INTEGER,
-    imageURL: DataTypes.STRING
+    categoryId: DataTypes.INTEGER,
+    userId: DataTypes.INTEGER,
+    imageURL: DataTypes.TEXT
   }, {
     sequelize,
     modelName: 'Item',

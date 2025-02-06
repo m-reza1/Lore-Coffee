@@ -13,14 +13,14 @@ module.exports = (sequelize, DataTypes) => {
       // define association here
       // A Profile belongs to a User
       Profile.belongsTo(models.User, {
-        foreignKey: 'UserId'
+        foreignKey: 'userId'
       });
     }
   }
   Profile.init({
     profileName: DataTypes.STRING,
     phoneNumber: DataTypes.STRING,
-    UserId: DataTypes.INTEGER
+    userId: DataTypes.INTEGER
   }, {
     sequelize,
     modelName: 'Profile',
