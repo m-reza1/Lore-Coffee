@@ -8,22 +8,7 @@
 </head>
 <body class="bg-gray-100">
     <!-- Header -->
-    <header class="bg-white shadow-md sticky top-0 z-10">
-        <div class="container mx-auto flex justify-between items-center p-4">
-            <h1 class="text-xl font-bold">Lore Coffee</h1>
-            <nav class="hidden md:flex space-x-6">
-                <a href="/" class="hover:text-gray-500">Home</a>
-                <a href="/menu" class="hover:text-gray-500">Menu</a>
-                <a href="/cart" class="hover:text-gray-500">Order</a>
-                <a href="/profile" class="hover:text-gray-500">Profile</a>
-                <a href="/invoice" class="hover:text-gray-500">Invoice</a>
-            </nav>
-            <button class="md:hidden" id="menu-button">
-                <svg id="menu-icon" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg>
-            </button>
-        </div>
-
-    </header>
+    <%- include('partials/nav') %>
     
     <!-- Content -->
     <main class="container mx-auto p-6">

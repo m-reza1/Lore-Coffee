@@ -17,8 +17,10 @@ router.get('/', userController.home) //home
 router.get('/menu', userController.menu)// show all item
 
 // router.use(accountAuth)
-
-router.get('/order', userController.order)
+router.post('/add-to-order', userController.addToOrder);
+router.post('/update-quantity', userController.updateQuantity);
+router.post('/remove-from-order', userController.removeFromOrder);
+router.get('/order', userController.order);
 router.get('/invoice', userController.invoice) // invoice
 // router.get('/menu', userController.menu)// show all item
 // router.get('/invoice', userController.invoice) // invoice
@@ -35,7 +37,7 @@ router.get('/invoice', userController.invoice) // invoice
 // router.get('/', adminController.X);
 
 // router.get('/menu', adminController.getAdminMenu);
-router.get('/profile', adminController.getAdminProfile);
+router.get('/profile', adminController.getProfile);
 router.get('/menu/add', adminController.showAdminAddMenu);
 router.post('/menu/add', adminController.saveAdminAddMenu);
 router.get('/profile/edit/:id', adminController.showEditProfile);
