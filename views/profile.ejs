@@ -18,20 +18,15 @@
             <th>Phone Number</th>
             <th>Email</th>
             <th>Password</th>
-            <th>Action</th>
         </tr>
 
-        <% menus.forEach(el => { %>
+        <% profiles.forEach(el => { %>
          <tr>
-            <td><img src="<%= el.imageURL %>" alt="<%= el.itemName %>" width="200px"></td>
-            <td><%= el.itemName %></td>
-            <td><%= el.description %></td>
-            <td><%= el.price %></td>
-            <td>
-                <button>
-                    <a href="">Order</a>
-                </button>
-            </td>
+            <td><%= el.User.userName %></td>
+            <td><%= el.profileName %></td>
+            <td><%= el.phoneNumber %></td>
+            <td><%= el.User.email %></td>
+            <td><%= el.User.password %></td>
          </tr>
         <% }) %>
     </table>
