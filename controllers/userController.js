@@ -1,8 +1,9 @@
-const { Model } = require("sequelize");
-const { User, Profile } = require("../models/index");
+const { Model, Op } = require("sequelize");
+const { User, Profile, Category, Item, Invoice } = require("../models/index");
 const bcrypt = require('bcryptjs'); // Import bcryptjs
 const accountAuth = require('../middleware/auth');
 const user = require("../models/user");
+const { formatRupiah } = require('../helpers/helper.js');
 
 class userController {
     static async registerForm(req, res) {
@@ -18,7 +19,7 @@ class userController {
             const { userName, email, password } = req.body
 
             // console.log(req.body,'<<');
-            
+
 
             // const salt =  bcrypt.genSaltSync(10);
             // const hashedPassword =  bcrypt.hashSync(password, salt);
@@ -63,18 +64,18 @@ class userController {
             });
 
             // console.log(user);
-            
+
             const isValidPassword = bcrypt.compareSync(password, user.password);
 
             // console.log(isValidPassword);
-            
+
 
             if (!isValidPassword) {
                 const error = 'Invalid username or password';
                 return res.redirect(`/login?error=${error}`);
             }
 
-            req.session.userId = user.id; 
+            req.session.userId = user.id;
             // console.log(req.session,'<<');
 
             res.redirect('/');
@@ -95,17 +96,50 @@ class userController {
     }
     static async menu(req, res) {
         try {
+            const { itemName, categoryName } = req.query;
 
-            // res.render('menu')
+            let options = {
+                where: {},
+                include: {
+                    model: Category,
+                    attributes: ['categoryName'],
+                },
+                order: [['itemName', 'ASC']]
+            };
+
+            // SEARCH: Filter berdasarkan nama item
+            if (itemName) {
+                options.where.itemName = {
+                    [Op.iLike]: `%${itemName}%`
+                };
+            }
+
+            // FILTER: Filter berdasarkan kategori
+            if (categoryName) {
+                options.include = [{
+                    model: Category,
+                    attributes: ['categoryName'],
+                    where: { categoryName }
+                }];
+            }
+
+            // Ambil data menu
+            let menus = await Item.findAll(options);
+
+            // Ambil semua kategori untuk ditampilkan di filter
+            let categories = await Category.findAll();
+
+            res.render("userMenu", { menus, categories, formatRupiah });
+
         } catch (err) {
             console.log(err);
             res.send(err)
         }
     }
 
-    static async cart(req, res) {
+    static async order(req, res) {
         try {
-            res.render('cart')
+            res.render('order')
         } catch (err) {
             console.log(err);
             res.send(err)

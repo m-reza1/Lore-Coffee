@@ -32,7 +32,10 @@ module.exports = (sequelize, DataTypes) => {
     userName: DataTypes.STRING,
     email: DataTypes.STRING,
     password: DataTypes.STRING,
-    role: DataTypes.STRING
+    role: {
+      type: DataTypes.STRING,
+      defaultValue: "User" // Set default value for role (register cuma buat user)
+  }
   }, {
     hooks: {
       beforeCreate(instance, options) {

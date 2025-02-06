@@ -1,27 +1,18 @@
-
-<!-- Navigation Bar -->
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-    <div class="container-fluid">
-        <a class="navbar-brand">Lore Coffee</a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
-            aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
+<!-- Header navbar -->
+<header class="bg-white shadow-md sticky top-0 z-10">
+    <div class="container mx-auto flex justify-between items-center p-4">
+        <h1 class="text-xl font-bold">Lore Coffee</h1>
+        <nav class="hidden md:flex space-x-6">
+            <a href="/" class="hover:text-gray-500">Home</a>
+            <a href="/menu" class="hover:text-gray-500">Menu</a>
+            <a href="/order" class="hover:text-gray-500">order</a>
+            <a href="/profile" class="hover:text-gray-500">Profile</a>
+            <a href="/invoice" class="hover:text-gray-500">Invoice</a>
+        </nav>
+        <button class="md:hidden" id="menu-button">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path>
+            </svg>
         </button>
-        <div class="collapse navbar-collapse" id="navbarNav">
-            <ul class="navbar-nav">
-                <li class="nav-item">
-                    <a class="nav-link active" aria-current="page" href="/">Home</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="/menu">Menu</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="/order">Order</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="/profile">Profile</a>
-                </li>
-            </ul>
-        </div>
     </div>
-</nav>
+</header>

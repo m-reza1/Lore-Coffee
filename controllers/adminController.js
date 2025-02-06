@@ -11,6 +11,48 @@ const {
 const { Op } = require("sequelize");
 
 class adminController {
+    static async loginPage(req, res) {
+            try {
+                res.render('login')
+            } catch (err) {
+                console.log(err);
+                res.send(err)
+            }
+        }
+    
+        static async loggedIn(req, res) {
+            try {
+                const { userName, password } = req.body
+    
+                const user = await User.findOne({
+                    where: {
+                        userName: userName
+                    }
+                });
+    
+                // console.log(user);
+    
+                const isValidPassword = bcrypt.compareSync(password, user.password);
+    
+                // console.log(isValidPassword);
+    
+    
+                if (!isValidPassword) {
+                    const error = 'Invalid username or password';
+                    return res.redirect(`/login?error=${error}`);
+                }
+    
+                req.session.userId = user.id;
+                // console.log(req.session,'<<');
+    
+                res.redirect('/');
+            } catch (err) {
+                console.log(err);
+                res.send(err)
+            }
+        }
+
+    // =======================
 
     static async getAdminMenu(req, res) {
         try {
