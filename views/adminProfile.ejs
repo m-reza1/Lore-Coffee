@@ -18,6 +18,7 @@
             <th>Phone Number</th>
             <th>Email</th>
             <th>Password</th>
+            <th>Action</th>
         </tr>
 
         <% profiles.forEach(el => { %>
@@ -27,6 +28,11 @@
             <td><%= el.phoneNumber %></td>
             <td><%= el.User.email %></td>
             <td><%= el.User.password %></td>
+            <td>
+                <button>
+                    <a href="/profile/edit/<%= el.id %>">Edit</a>
+                </button>
+            </td>
          </tr>
         <% }) %>
     </table>

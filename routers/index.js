@@ -1,5 +1,5 @@
 const express = require('express')
-const router =  require('express').Router()
+const router = require('express').Router()
 const userController = require('../controllers/userController')
 const adminController = require('../controllers/adminController')
 const accountAuth = require('../middleware/auth')
@@ -19,6 +19,9 @@ router.get('/menu',userController.menu)// show all item
 router.use(accountAuth)
 
 router.get('/cart',accountAuth, userController.cart)
+router.get('/invoice', userController.invoice) // invoice
+router.get('/cart', userController.cart) // invoice
+// router.get('/menu', userController.menu)// show all item
 // router.get('/invoice', userController.invoice) // invoice
 // router.get('/profile')
 
@@ -30,5 +33,15 @@ router.get('/cart',accountAuth, userController.cart)
 // router.get('/', adminController.X);
 // router.get('/', adminController.X);
 // router.get('/', adminController.X);
+router.get('/', adminController.X);
+router.get('/menu', adminController.getAdminMenu);
+router.get('/profile', adminController.getAdminProfile);
+router.get('/menu/add', adminController.showAdminAddMenu);
+router.post('/menu/add', adminController.saveAdminAddMenu);
+router.get('/profile/edit/:id', adminController.showAdminEditProfile);
+router.post('/profile/edit/:id', adminController.saveAdminEditProfile);
+router.get('/menu/edit/:id', adminController.showAdminEditMenu);
+router.post('/menu/edit/:id', adminController.saveAdminEditMenu);
+router.get('/menu/delete/:id', adminController.deleteAdminOneMenu);
 
 module.exports = router
