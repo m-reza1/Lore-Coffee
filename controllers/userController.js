@@ -1,8 +1,8 @@
 const { Model } = require("sequelize");
 const { User, Profile } = require("../models/index");
 const bcrypt = require('bcryptjs'); // Import bcryptjs
-const bodyParser = require('body-parser');
-
+const accountAuth = require('../middleware/auth');
+const user = require("../models/user");
 
 class userController {
     static async registerForm(req, res) {
@@ -13,48 +13,71 @@ class userController {
             res.send(err)
         }
     }
-
     static async saveRegisterForm(req, res) {
         try {
             const { userName, email, password } = req.body
 
-            const salt = await bcrypt.genSalt(10);
-            const hashedPassword = await bcrypt.hash(password, salt);
+            // console.log(req.body,'<<');
+            
 
-            // Simpan user ke "database"
-            // User.push({ userName, email, password: hashedPassword });
+            // const salt =  bcrypt.genSaltSync(10);
+            // const hashedPassword =  bcrypt.hashSync(password, salt);
 
-        let createUser = await User.create({
+            const createUser = await User.create({
                 userName,
                 email,
-                password: hashedPassword
-            }, {returning: true}
-        )
-        
-        await Profile.create({
-            profileName: 'Blm ada mas',
-            phoneNumber: 'masih kosong mas',
-            userId : createUser.id
-        })
+                password
+            }, { returning: true }
+            )
 
+            await Profile.create({
+                profileName: 'Blm ada mas',
+                phoneNumber: 'masih kosong mas',
+                userId: createUser.id
+            })
             res.redirect(`/login`)
+        } catch (err) {
+            console.log(err);
+            res.send(err)
+            res.status(500).json({ error: err.message });
+        }
+    }
+
+    static async loginPage(req, res) {
+        try {
+            res.render('login')
         } catch (err) {
             console.log(err);
             res.send(err)
         }
     }
 
-    static async loginPage(req, res) {
+    static async loggedIn(req, res) {
         try {
-            const { username, password } = req.body
+            const { userName, password } = req.body
 
-            User.findOne( {
+            const user = await User.findOne({
                 where: {
-                    username
+                    userName: userName
                 }
-            })
+            });
 
-            res.render('login')
+            // console.log(user);
+            
+            const isValidPassword = bcrypt.compareSync(password, user.dataValues.password);
+
+            // console.log(isValidPassword);
+            
+
+            if (!isValidPassword) {
+                const error = 'Invalid username or password';
+                return res.redirect(`/login?error=${error}`);
+            }
+
+            req.session.userId = user.id; 
+            // console.log(req.session,'<<');
+
+            res.redirect('/');
         } catch (err) {
             console.log(err);
             res.send(err)
