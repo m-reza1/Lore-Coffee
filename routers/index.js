@@ -35,7 +35,7 @@ router.get('/invoice', userController.invoice) // invoice
 // router.get('/', adminController.X);
 
 // router.get('/menu', adminController.getAdminMenu);
-router.get('/profile', adminController.getAdminProfile);
+router.get('/profile', adminController.getProfile);
 router.get('/menu/add', adminController.showAdminAddMenu);
 router.post('/menu/add', adminController.saveAdminAddMenu);
 router.get('/profile/edit/:id', adminController.showEditProfile);
