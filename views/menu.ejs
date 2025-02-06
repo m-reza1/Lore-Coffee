@@ -44,3 +44,42 @@
     </main>
 </body>
 </html>
+=======
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Menu</title>
+</head>
+<body>
+    <h1>Menu</h1>
+
+    <%- include('partials/nav') %> <br>
+    
+    <hr>
+    <table border="1">
+        <tr>
+            <th>Image</th>
+            <th>Nama</th>
+            <th>Deskripsi</th>
+            <th>Harga</th>
+            <th>Action</th>
+        </tr>
+
+        <% menus.forEach(el => { %>
+         <tr>
+            <td><img src="<%= el.imageURL %>" alt="<%= el.itemName %>" width="200px"></td>
+            <td><%= el.itemName %></td>
+            <td><%= el.description %></td>
+            <td><%= el.price %></td>
+            <td>
+                <button>
+                    <a href="">Order</a>
+                </button>
+            </td>
+         </tr>
+        <% }) %>
+    </table>
+    
+</body>
+</html>

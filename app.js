@@ -4,9 +4,13 @@ const port = 3000
 const router = require('./routers')
 const session = require('express-session')
 
+//BODY PARSER
 app.use(express.urlencoded({ extended: false }));
+
+//TEMPLATE ENGINE
 app.set('view engine', 'ejs')
 
+//MIDDLEWARE
 app.use(router);
 
 app.listen(port, () => {

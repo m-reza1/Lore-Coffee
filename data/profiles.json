@@ -1,0 +1,20 @@
+[
+    {
+        "id": 1,
+        "profileName": "Andros Cowles",
+        "phoneNumber": "3418624446",
+        "userId": 1
+    },
+    {
+        "id": 2,
+        "profileName": "Tonye Wilce",
+        "phoneNumber": "7874194944",
+        "userId": 2
+    },
+    {
+        "id": 3,
+        "profileName": "Maible Marsh",
+        "phoneNumber": "6689816439",
+        "userId": 3
+    }
+]
