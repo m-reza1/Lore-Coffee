@@ -31,7 +31,14 @@
                 <a href="/profile/edit/<%= profiles[0].id %>" 
                    class="mt-6 bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-6 rounded-lg shadow-md transition duration-300">
                     Edit Profile
+                </a> <br>
+                <button 
+                class="bg-red-600 hover:bg-red-700 text-white font-semibold py-2 px-6 rounded-lg shadow-md transition duration-300">
+                <a href="/logout" method="get" class="mt-4">
+                        Logout
                 </a>
+                </button>
+                </form>
             </div>
             <% } else { %>
             <p class="text-gray-600">Profile not found</p>

@@ -10,7 +10,7 @@
     <!-- Header -->
     <header class="bg-white shadow-md sticky top-0 z-10">
         <div class="container mx-auto flex justify-between items-center p-4">
-            <h1 class="text-xl font-bold">Lore Coffee</h1>
+            <h1 class="text-xl font-bold text-gray-800">Lore Coffee</h1>
             <nav class="hidden md:flex space-x-6">
                 <a href="/" class="hover:text-gray-500">Home</a>
                 <a href="/menu" class="hover:text-gray-500">Menu</a>
@@ -27,44 +27,46 @@
     <main class="container mx-auto p-6">
         <!-- Invoice Section -->
         <section class="bg-white p-6 rounded-lg shadow-md">
-            <h2 class="text-2xl font-bold">Invoice</h2>
-            <p class="text-gray-700 mt-2">Thank you for your order! Here are your transaction details:</p>
+
+            <p><strong>Invoice No :</strong> <%= invoiceCode %></p>
+            <p class="text-gray-700 mt-2">Thank you for your order. Here are the details:</p>
             
-            <div class="mt-4">
-                <p><strong>Name:</strong> John Doe</p>
-                <p><strong>Date:</strong> February 6, 2025</p>
-                <p><strong>Invoice No.:</strong> INV-123456</p>
+            <!-- Order Details -->
+            <div class="mt-4 space-y-4">
+                <% if (order.length > 0) { %>
+                    <% order.forEach(item => { %>
+                        <div class="flex items-center justify-between bg-gray-50 p-4 rounded-lg shadow">
+                            <div class="flex items-center space-x-4">
+                                <img src="<%= item.imageURL %>" alt="<%= item.itemName %>" class="w-16 h-16 object-cover rounded-lg">
+                                <div>
+                                    <h3 class="text-lg font-semibold"><%= item.itemName %></h3>
+                                    <p class="text-gray-600">Quantity: <%= item.quantity %></p>
+                                </div>
+                            </div>
+                            <span class="text-lg font-bold"><%= formatRupiah(item.price * item.quantity) %></span>
+                        </div>
+                    <% }) %>
+                <% } else { %>
+                    <p class="text-center py-4 text-gray-500">No items in the order</p>
+                <% } %>
             </div>
             
-            <div class="mt-6 overflow-hidden rounded-lg border border-gray-200 shadow-md">
-                <table class="w-full text-left border-collapse">
-                    <thead>
-                        <tr class="bg-gray-800 text-white">
-                            <th class="p-4">Item</th>
-                            <th class="p-4">Qty</th>
-                            <th class="p-4">Price</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr class="border-b border-gray-200">
-                            <td class="p-4">Cappuccino</td>
-                            <td class="p-4">2</td>
-                            <td class="p-4">Rp 50.000</td>
-                        </tr>
-                        <tr class="border-b border-gray-200">
-                            <td class="p-4">Latte</td>
-                            <td class="p-4">1</td>
-                            <td class="p-4">Rp 25.000</td>
-                        </tr>
-                        <tr class="bg-gray-100 font-bold">
-                            <td class="p-4" colspan="2">Total</td>
-                            <td class="p-4">Rp 75.000</td>
-                        </tr>
-                    </tbody>
-                </table>
+            <!-- Total and Payment Information -->
+            <div class="mt-6">
+                <h3 class="text-xl font-bold">Total: <%= formatRupiah(total) %></h3>
+                <div class="mt-4">
+                    <h4 class="text-lg font-semibold">Payment Information</h4>
+                    <p class="text-gray-700">Please transfer the total amount to the following account:</p>
+                    <div class="bg-gray-50 p-4 rounded-lg mt-2">
+                        <p class="text-gray-700"><strong>Bank:</strong> BCA</p>
+                        <p class="text-gray-700"><strong>Account Number:</strong> 1234 5678 9012</p>
+                        <p class="text-gray-700"><strong>Account Holder:</strong> Lore Coffee</p>
+                    </div>
+                </div>
+                <div class="mt-6 text-right">
+                    <button class="bg-green-500 text-white px-6 py-2 rounded-lg shadow-md hover:bg-green-600" onclick="window.print()">Print Invoice</button>
+                </div>
             </div>
-            
-            <p class="mt-4 text-gray-700">Please proceed with the payment using the selected method. Thank you for choosing Lore Coffee!</p>
         </section>
     </main>
 </body>
