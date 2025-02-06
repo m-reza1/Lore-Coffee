@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="bg-gray-100 font-sans">
+    <main class="container mx-auto p-6">
+        <%- include('partials/nav') %>
+
+        <div class="my-2">
+            <hr class="border-gray-300">
+        </div>
+
+        <div class="overflow-x-auto shadow-md rounded-lg">
+            <table class="min-w-full table-auto bg-white border-collapse">
+                <thead class="bg-gray-200">
+                    <tr>
+                        <th class="py-2 px-4 text-left text-gray-700 font-semibold">User Name</th>
+                        <th class="py-2 px-4 text-left text-gray-700 font-semibold">Profile Name</th>
+                        <th class="py-2 px-4 text-left text-gray-700 font-semibold">Phone Number</th>
+                        <th class="py-2 px-4 text-left text-gray-700 font-semibold">Email</th>
+                        <th class="py-2 px-4 text-left text-gray-700 font-semibold">Password</th>
+                        <th class="py-2 px-4 text-left text-gray-700 font-semibold">Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% profiles.forEach(el => { %>
+                    <tr class="hover:bg-gray-100 border-b">
+                        <td class="py-2 px-4 text-gray-700"><%= el.User.userName %></td>
+                        <td class="py-2 px-4 text-gray-700"><%= el.profileName %></td>
+                        <td class="py-2 px-4 text-gray-700"><%= el.phoneNumber %></td>
+                        <td class="py-2 px-4 text-gray-700"><%= el.User.email %></td>
+                        <td class="py-2 px-4 text-gray-700"><%= el.User.password %></td>
+                        <td class="py-2 px-4">
+                            <a href="/profile/edit/<%= el.id %>" class="text-blue-500 hover:text-blue-700 font-semibold">
+                                Edit
+                            </a>
+                        </td>
+                    </tr>
+                    <% }) %>
+                </tbody>
+            </table>
+        </div>
+    </main>
+
+</body>
+</html>
+

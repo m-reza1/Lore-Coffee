@@ -3,10 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lore Coffee</title>
+    <title>Menu - Lore Coffee</title>
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="bg-gray-100">
+    <!-- Header navbar  -->
+    <%- include('partials/nav') %>
     <!-- Header -->
     <header class="bg-white shadow-md sticky top-0 z-10">
         <div class="container mx-auto flex justify-between items-center p-4">
@@ -28,80 +30,42 @@
     <!-- Content -->
     <main class="container mx-auto p-6">
         <!-- Banner Promo -->
-        <section class="bg-yellow-200 rounded-lg p-6 text-center shadow-md">
+        <section class="bg-amber-700 text-white rounded-lg p-6 text-center shadow-md">
             <h2 class="text-2xl font-bold">Promo Special!</h2>
             <p class="text-lg mt-2">Dapatkan diskon 20% untuk semua varian kopi hingga akhir bulan ini!</p>
         </section>
 
         <!-- Search bar -->
-        <hr>
         <form action="/menu" method="get">
-            <input type="text" name="itemName" id="itemName" placeholder="Search by Name">
-
-            <button type="submit">Search</button>
-            <button>
-                <a href="/menu">Reset Search</a>
-            </button>
+        <div class="mt-6 flex justify-center">
+            <input type="text" name="itemName" id="itemName" placeholder="Cari kopi..." class="p-2 rounded-l-lg border focus:outline-none">
+            <button type="submit" class="bg-amber-700 text-white px-4 py-2 rounded-r-lg hover:bg-amber-800">Search</button>
+        </div>
         </form>
 
-        </section>
-
         <!-- Filter -->
-        <div>
-            <a href="/menu"><button>All</button></a>
-        
-            <button>
-                <a href="/menu?categoryName=Americano">Americano</a>
-            </button>
-
-            <button>
-                <a href="/menu?categoryName=Espresso">Espresso</a>
-            </button>
-        
-            <button>
-                <a href="/menu?categoryName=Cappuccino">Cappuccino</a>
-            </button>
-        
-            <button>
-                <a href="/menu?categoryName=Macchiato">Macchiato</a>
-            </button>
+        <div class="flex justify-center space-x-4 mt-4">
+            <a href="/menu" class="bg-gray-200 px-4 py-2 rounded-lg hover:bg-gray-300">All</a>
+            <a href="/menu?categoryName=Americano" class="bg-gray-200 px-4 py-2 rounded-lg hover:bg-gray-300">Americano</a>
+            <a href="/menu?categoryName=Espresso" class="bg-gray-200 px-4 py-2 rounded-lg hover:bg-gray-300">Espresso</a>
+            <a href="/menu?categoryName=Cappuccino" class="bg-gray-200 px-4 py-2 rounded-lg hover:bg-gray-300">Cappuccino</a>
+            <a href="/menu?categoryName=Macchiato" class="bg-gray-200 px-4 py-2 rounded-lg hover:bg-gray-300">Macchiato</a>
         </div>
-        
 
         <!-- Card All Menu -->
+        <div class="grid md:grid-cols-3 gap-6 mt-8">
+            <% menus.forEach(el => { %>
+                <div class="bg-white rounded-lg shadow-md overflow-hidden p-4">
+                    <img src="<%= el.imageURL %>" alt="<%= el.itemName %>" class="w-full h-40 object-cover rounded-md">
+                    <h3 class="text-lg font-bold mt-2"><%= el.itemName %></h3>
+                    <p class="text-gray-700 text-sm mt-1"><%= el.description %></p>
+                    <p class="text-amber-700 font-bold mt-2"><%= formatRupiah(el.price) %></p>
+                    <div class="mt-4">
+                        <a href="" class="bg-amber-700 text-white py-2 px-4 rounded-lg hover:bg-amber-800 block text-center">Order</a>
+                    </div>
+                </div>
+            <% }) %>
+        </div>
     </main>
-</body>
-</html>
-
-<body>
-    <h1>Menu</h1>
-
-    <%- include('partials/nav') %> <br>
-    
-    <hr>
-    <table border="1">
-        <tr>
-            <th>Image</th>
-            <th>Name</th>
-            <th>Description</th>
-            <th>Price</th>
-            <th>Action</th>
-        </tr>
-
-        <!-- <% menus.forEach(el => { %>
-         <tr>
-            <td><img src="<%= el.imageURL %>" alt="<%= el.itemName %>" width="200px"></td>
-            <td><%= el.itemName %></td>
-            <td><%= el.description %></td>
-            <td><%= el.price %></td>
-            <td> -->
-                <button>
-                    <a href="">Order</a>
-                </button>
-            </td>
-         </tr>
-        <% }) %>
-    </table>
-    
 </body>
 </html>
