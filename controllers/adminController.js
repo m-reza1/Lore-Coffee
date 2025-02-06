@@ -12,47 +12,56 @@ const { Op } = require("sequelize");
 
 class adminController {
     static async loginPage(req, res) {
-            try {
-                res.render('login')
-            } catch (err) {
-                console.log(err);
-                res.send(err)
-            }
+        try {
+            res.render('login')
+        } catch (err) {
+            console.log(err);
+            res.send(err)
         }
-    
-        static async loggedIn(req, res) {
-            try {
-                const { userName, password } = req.body
-    
-                const user = await User.findOne({
-                    where: {
-                        userName: userName
-                    }
-                });
-    
-                // console.log(user);
-    
-                const isValidPassword = bcrypt.compareSync(password, user.password);
-    
-                // console.log(isValidPassword);
-    
-    
-                if (!isValidPassword) {
-                    const error = 'Invalid username or password';
-                    return res.redirect(`/login?error=${error}`);
+    }
+
+    static async loggedIn(req, res) {
+        try {
+            const { userName, password } = req.body
+
+            const user = await User.findOne({
+                where: {
+                    userName: userName
                 }
-    
-                req.session.userId = user.id;
-                // console.log(req.session,'<<');
-    
-                res.redirect('/');
-            } catch (err) {
-                console.log(err);
-                res.send(err)
+            });
+
+            // console.log(user);
+
+            const isValidPassword = bcrypt.compareSync(password, user.password);
+
+            // console.log(isValidPassword);
+
+
+            if (!isValidPassword) {
+                const error = 'Invalid username or password';
+                return res.redirect(`/login?error=${error}`);
             }
+
+            req.session.userId = user.id;
+            // console.log(req.session,'<<');
+
+            res.redirect('/');
+        } catch (err) {
+            console.log(err);
+            res.send(err)
         }
+    }
 
     // =======================
+    static async homeAdmin(req, res) {
+        try {
+
+            res.render('homeAdmin')
+        } catch (err) {
+            console.log(err);
+            res.send(err)
+        }
+    }
 
     static async getAdminMenu(req, res) {
         try {
@@ -89,7 +98,15 @@ class adminController {
             // Ambil semua kategori untuk ditampilkan di filter
             let categories = await Category.findAll();
 
-            res.render("adminMenu", { menus, categories, formatRupiah });
+            const toast = req.session.toast;
+            delete req.session.toast; // Hapus setelah diambil
+
+            res.render("adminMenu", {
+                menus,
+                categories,
+                formatRupiah,
+                toast 
+            });
         } catch (err) {
             console.log(err);
             res.send(err);
@@ -99,24 +116,24 @@ class adminController {
 
     static async getProfile(req, res) {
         try {
-            const userId = req.session.userId; 
-    
+            const userId = req.session.userId;
+
             if (!userId) {
-                return res.redirect("/login"); 
+                return res.redirect("/login");
             }
-    
+
             let profile = await Profile.findOne({
-                where: { userId }, 
-                include: User, 
+                where: { userId },
+                include: User,
             });
-    
-            res.render("profile", { profiles: [profile] }); 
+
+            res.render("profile", { profiles: [profile] });
         } catch (err) {
             console.log(err);
             res.send(err);
         }
     }
-    
+
 
     static async showAdminAddMenu(req, res) {
         try {
@@ -145,7 +162,7 @@ class adminController {
                 imageURL
             });
 
-            res.redirect("/menu");
+            res.redirect("/menu/admin");
         } catch (err) {
             console.log(err);
             res.send(err)
@@ -186,7 +203,7 @@ class adminController {
                 }
             );
 
-            res.redirect("/menu");
+            res.redirect("/menu/admin");
         } catch (err) {
             console.log(err);
 
@@ -198,18 +215,27 @@ class adminController {
         try {
             const { id } = req.params;
 
-            await Item.findByPk(+id);
-
             await Item.destroy({
-                where: {
-                    id: +id
-                }
-            })
+                where: { id: +id }
+            });
 
-            res.redirect('/menu')
+            // Set session untuk notifikasi
+            req.session.toast = {
+                type: 'success',
+                message: 'Item berhasil dihapus dari menu'
+            };
+
+            res.redirect('/menu/admin');
         } catch (err) {
             console.log(err);
-            res.send(err)
+
+            // Set session untuk notifikasi error
+            req.session.toast = {
+                type: 'danger',
+                message: 'Gagal menghapus item: ' + err.message
+            };
+
+            res.redirect('/menu/admin');
         }
     }
 
@@ -241,7 +267,7 @@ class adminController {
             // Temukan user berdasarkan id
             const user = await User.findOne({
                 where: { id: +id },
-                include: [{ model: Profile }] 
+                include: [{ model: Profile }]
             });
 
 
@@ -254,7 +280,7 @@ class adminController {
             // Update profile data
             await Profile.update(
                 { profileName, phoneNumber },
-                { where: { id: user.Profile.id } } 
+                { where: { id: user.Profile.id } }
             );
 
             res.redirect("/profile");

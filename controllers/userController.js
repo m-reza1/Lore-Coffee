@@ -209,8 +209,12 @@ class userController {
     static async removeFromOrder(req, res) {
         try {
             const { itemId } = req.body;
-
             req.session.order = req.session.order.filter(i => i.id !== Number(itemId));
+
+            req.session.toast = {
+                type: 'danger',
+                message: 'Item berhasil dihapus dari keranjang'
+            };
 
             res.redirect('/order');
         } catch (err) {
@@ -222,10 +226,16 @@ class userController {
     static async order(req, res) {
         try {
             const order = req.session.order || [];
-
             const total = order.reduce((sum, item) => sum + (item.price * item.quantity), 0);
-            
-            res.render('order', { order, total, formatRupiah });
+            const toast = req.session.toast;
+            delete req.session.toast;
+
+            res.render('order', {
+                order,
+                total,
+                formatRupiah,
+                toast
+            });
         } catch (err) {
             console.log(err);
             res.send(err);
