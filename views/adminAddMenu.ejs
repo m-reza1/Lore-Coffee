@@ -3,45 +3,94 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lore Coffee</title>
+    <title>Tambah Menu - Lore Coffee</title>
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="bg-gray-100">
-    <%- include('partials/nav') %> <br>
+    <!-- Header -->
+    <%- include('partials/navAdmin') %>
 
-    <h1>Add Menu</h1>
-    <h3>Please fill the form below to add a new Menu!</h3>
+    <!-- Content -->
+    <main class="container mx-auto p-6">
+        <!-- Header Section -->
+        <section class="bg-amber-700 text-white rounded-lg p-6 text-center shadow-md mb-8">
+            <h1 class="text-2xl font-bold">Tambah Menu Baru</h1>
+            <h3 class="text-lg mt-2">Please fill the form below to add a new Menu!</h3>
+        </section>
 
-    <hr>
-    <form action="/menu/add" method="post" class="add-menu-form">
-        <label for="itemName">The Name of The Item?</label><br>
-        <input type="text" name="itemName" id="itemName"><br>
+        <!-- Form Container -->
+        <div class="max-w-2xl mx-auto bg-white rounded-lg shadow-md p-6">
+            <form action="/menu/add" method="post" class="space-y-4">
+                <!-- Item Name -->
+                <div>
+                    <label for="itemName" class="block text-sm font-medium text-gray-700">
+                        The Name of The Item?
+                    </label>
+                    <input type="text" name="itemName" id="itemName" required
+                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm 
+                               focus:border-amber-500 focus:ring-amber-500 sm:text-sm p-2">
+                </div>
 
-        <label for="imageURL">The Photo of The Item?</label><br>
-        <input type="text" name="imageURL" id="imageURL"><br>
+                <!-- Image URL -->
+                <div>
+                    <label for="imageURL" class="block text-sm font-medium text-gray-700">
+                        The Photo of The Item?
+                    </label>
+                    <input type="url" name="imageURL" id="imageURL" required
+                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm 
+                               focus:border-amber-500 focus:ring-amber-500 sm:text-sm p-2">
+                </div>
 
-        <label for="category">The Category of The Item?</label><br>
-        <select name="categoryId" id="category">
-            <option value="" selected disabled>Select Category</option>
-            <% categories.forEach(el => { %>
-                <option value="<%= el.id %>"><%= el.categoryName %></option>
-            <% }) %>
-        </select><br>
+                <!-- Category -->
+                <div>
+                    <label for="category" class="block text-sm font-medium text-gray-700">
+                        The Category of The Item?
+                    </label>
+                    <select name="categoryId" id="category" required
+                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm 
+                               focus:border-amber-500 focus:ring-amber-500 sm:text-sm p-2">
+                        <option value="" selected disabled>Select Category</option>
+                        <% categories.forEach(el => { %>
+                            <option value="<%= el.id %>"><%= el.categoryName %></option>
+                        <% }) %>
+                    </select>
+                </div>
 
-        <label for="price">The Price of The Item?</label><br>
-        <input type="number" name="price" id="price"><br>
+                <!-- Price -->
+                <div>
+                    <label for="price" class="block text-sm font-medium text-gray-700">
+                        The Price of The Item?
+                    </label>
+                    <input type="number" name="price" id="price" required
+                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm 
+                               focus:border-amber-500 focus:ring-amber-500 sm:text-sm p-2">
+                </div>
 
-        <label for="description">The Description of The Item?</label><br>
-        <input type="text" name="description" id="description"><br>
+                <!-- Description -->
+                <div>
+                    <label for="description" class="block text-sm font-medium text-gray-700">
+                        The Description of The Item?
+                    </label>
+                    <textarea name="description" id="description" rows="3" required
+                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm 
+                               focus:border-amber-500 focus:ring-amber-500 sm:text-sm p-2"></textarea>
+                </div>
 
-        <div class="form-buttons">
-            <button type="submit" class="btn btn-submit">Submit</button>
-
-            <button>
-                <a href="/menu" class="btn btn-cancel">Cancel</a>
-            </button>
+                <!-- Button Group -->
+                <div class="flex justify-end space-x-4 mt-6">
+                    <a href="/menu/admin" 
+                       class="bg-gray-200 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-300 
+                              transition-colors duration-200">
+                        Cancel
+                    </a>
+                    <button type="submit" 
+                            class="bg-amber-700 text-white px-4 py-2 rounded-lg hover:bg-amber-800 
+                                   transition-colors duration-200">
+                        Submit
+                    </button>
+                </div>
+            </form>
         </div>
-    </form>
-    
+    </main>
 </body>
 </html>
