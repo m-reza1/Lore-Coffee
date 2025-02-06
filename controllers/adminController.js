@@ -97,19 +97,26 @@ class adminController {
     }
 
 
-    static async getAdminProfile(req, res) {
+    static async getProfile(req, res) {
         try {
-            let profiles = await Profile.findAll({
-                include: User
+            const userId = req.session.userId; 
+    
+            if (!userId) {
+                return res.redirect("/login"); 
+            }
+    
+            let profile = await Profile.findOne({
+                where: { userId }, 
+                include: User, 
             });
-
-            res.render("adminProfile", { profiles });
+    
+            res.render("profile", { profiles: [profile] }); 
         } catch (err) {
             console.log(err);
-
-            res.send(err)
+            res.send(err);
         }
     }
+    
 
     static async showAdminAddMenu(req, res) {
         try {
@@ -206,7 +213,7 @@ class adminController {
         }
     }
 
-    static async showAdminEditProfile(req, res) {
+    static async showEditProfile(req, res) {
         try {
             const { id } = req.params;
 
@@ -214,7 +221,7 @@ class adminController {
                 include: User
             });
 
-            res.render('adminEditProfile', {
+            res.render('editProfile', {
                 profiles: profile,
                 users: profile.User
             });
@@ -225,7 +232,7 @@ class adminController {
         }
     }
 
-    static async saveAdminEditProfile(req, res) {
+    static async saveEditProfile(req, res) {
         try {
             const { id } = req.params;
 

@@ -16,7 +16,7 @@ router.post("/login", userController.loggedIn)
 router.get('/', userController.home) //home
 router.get('/menu', userController.menu)// show all item
 
-router.use(accountAuth)
+// router.use(accountAuth)
 
 router.get('/order', userController.order)
 router.get('/invoice', userController.invoice) // invoice
@@ -38,8 +38,8 @@ router.get('/invoice', userController.invoice) // invoice
 router.get('/profile', adminController.getAdminProfile);
 router.get('/menu/add', adminController.showAdminAddMenu);
 router.post('/menu/add', adminController.saveAdminAddMenu);
-router.get('/profile/edit/:id', adminController.showAdminEditProfile);
-router.post('/profile/edit/:id', adminController.saveAdminEditProfile);
+router.get('/profile/edit/:id', adminController.showEditProfile);
+router.post('/profile/edit/:id', adminController.saveEditProfile);
 router.get('/menu/edit/:id', adminController.showAdminEditMenu);
 router.post('/menu/edit/:id', adminController.saveAdminEditMenu);
 router.get('/menu/delete/:id', adminController.deleteAdminOneMenu);
