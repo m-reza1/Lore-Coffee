@@ -34,7 +34,8 @@ router.get('/order', userController.order);
 router.post('/order', userController.checkout); 
 router.post('/checkout', userController.checkout);
 
-router.get('/invoice', userController.invoice); 
+router.post('/order', userController.checkout); // Proses checkout
+router.get('/invoice', accountAuth, userController.invoice); // Tampilkan invoice
 
 // ADMIN
 // router.get('/', adminController.X);

@@ -13,36 +13,67 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       // define association here
       // A User has one Profile
-      User.hasOne(models.Profile, { 
-        foreignKey: 'userId' 
+      User.hasOne(models.Profile, {
+        foreignKey: 'userId'
       });
 
       // A User has many Items
-      User.hasMany(models.Item, { 
-        foreignKey: 'userId' 
+      User.hasMany(models.Item, {
+        foreignKey: 'userId'
       });
 
       // A User has many Invoices
-      User.hasMany(models.Invoice, { 
-        foreignKey: 'userId' 
+      User.hasMany(models.Invoice, {
+        foreignKey: 'userId'
       });
     }
   }
   User.init({
-    userName: DataTypes.STRING,
-    email: DataTypes.STRING,
-    password: DataTypes.STRING,
+    userName: {
+      type: DataTypes.STRING,
+      allowNull: false,
+      unique: {
+        msg: 'Username already exists'
+      },
+      validate: {
+        len: {
+          args: [5, 255],
+          msg: 'Username must be at least 5 characters'
+        }
+      }
+    },
+    email: {
+      type: DataTypes.STRING,
+      allowNull: false,
+      unique: {
+        msg: 'Email already registered'
+      },
+      validate: {
+        isEmail: {
+          msg: 'Invalid email format'
+        }
+      }
+    },
+    password: {
+      type: DataTypes.STRING,
+      allowNull: false,
+      validate: {
+        len: {
+          args: [5, 255],
+          msg: 'Password must be at least 5 characters'
+        }
+      }
+    },
     role: {
       type: DataTypes.STRING,
-      defaultValue: "User" // Set default value for role (register cuma buat user)
-  }
+      defaultValue: "User"
+    }
   }, {
     hooks: {
       beforeCreate(instance, options) {
         var salt = bcrypt.genSaltSync(8);
         var hash = bcrypt.hashSync(instance.password, salt);
-
-        instance.password = hash
+        instance.password = hash;
       }
     },
     sequelize,
