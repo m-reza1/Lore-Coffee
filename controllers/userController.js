@@ -16,31 +16,44 @@ class userController {
     }
     static async saveRegisterForm(req, res) {
         try {
-            const { userName, email, password } = req.body
-
-            // console.log(req.body,'<<');
-
-
-            // const salt =  bcrypt.genSaltSync(10);
-            // const hashedPassword =  bcrypt.hashSync(password, salt);
+            const { userName, email, password } = req.body;
 
             const createUser = await User.create({
                 userName,
                 email,
                 password
-            }, { returning: true }
-            )
+            }, { returning: true });
 
             await Profile.create({
                 profileName: 'Blm ada mas',
                 phoneNumber: 'masih kosong mas',
                 userId: createUser.id
-            })
-            res.redirect(`/login`)
+            });
+
+            res.redirect('/login');
         } catch (err) {
-            console.log(err);
-            res.send(err)
-            res.status(500).json({ error: err.message });
+            let errors = [];
+
+            // Handle Sequelize validation errors
+            if (err.name === 'SequelizeValidationError') {
+                errors = err.errors.map(e => e.message);
+            }
+            // Handle unique constraint errors
+            else if (err.name === 'SequelizeUniqueConstraintError') {
+                err.errors.forEach(e => {
+                    if (e.path === 'userName') errors.push('Username already exists');
+                    if (e.path === 'email') errors.push('Email already registered');
+                });
+            }
+            // Handle other errors
+            else {
+                errors.push('Registration failed. Please try again.');
+            }
+
+            res.render('register', {
+                errors,
+                oldInput: req.body // Untuk mempertahankan input yang sudah dimasukkan
+            });
         }
     }
 
