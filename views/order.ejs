@@ -67,8 +67,8 @@
                     <p class="text-gray-700 mt-2">Here are the items you ordered:</p>
 
                     <div class="mt-4 space-y-4">
-                        <% if (order.length> 0) { %>
-                            <% order.forEach(item=> { %>
+                        <% if (order.length > 0) { %>
+                            <% order.forEach(item => { %>
                                 <div class="flex items-center justify-between bg-gray-50 p-4 rounded-lg shadow">
                                     <div class="flex items-center space-x-4">
                                         <img src="<%= item.imageURL %>" alt="<%= item.itemName %>"
@@ -110,37 +110,23 @@
                                         </form>
                                     </div>
                                 </div>
-                                <% }) %>
-                                    <% } else { %>
-                                        <p class="text-center py-4 text-gray-500">Your cart is empty</p>
-                                        <% } %>
+                            <% }) %>
+                        <% } else { %>
+                            <p class="text-center py-4 text-gray-500">Your cart is empty</p>
+                        <% } %>
                     </div>
 
-                    <% if (order.length> 0) { %>
+                    <% if (order.length > 0) { %>
                         <div class="mt-6 text-right">
-                            <h3 class="text-xl font-bold">Total: <%= formatRupiah(total) %>
-                            </h3>
+                            <h3 class="text-xl font-bold">Total: <%= formatRupiah(total) %></h3>
                             <a href="/invoice">
                                 <button
                                     class="mt-4 bg-green-500 text-white px-6 py-2 rounded-lg shadow-md hover:bg-green-600">Checkout</button>
                             </a>
                         </div>
-                    <% }) %>
-                <% } else { %>
-                    <p class="text-center py-4 text-gray-500">Your cart is empty</p>
-                <% } %>
-            </div>
-            
-            <% if (order.length > 0) { %>
-                <div class="mt-6 text-right">
-                    <h3 class="text-xl font-bold">Total: <%= formatRupiah(total) %></h3>
-                    <form action="/checkout" method="POST">
-                        <button type="submit" class="mt-4 bg-green-500 text-white px-6 py-2 rounded-lg shadow-md hover:bg-green-600">Checkout</button>
-                    </form>
-                </div>
-            <% } %>
-        </section>
-    </main>
+                    <% } %>
+                </section>
+            </main>
 
 </body>
 <script>

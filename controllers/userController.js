@@ -4,6 +4,7 @@ const bcrypt = require('bcryptjs'); // Import bcryptjs
 const accountAuth = require('../middleware/auth');
 const user = require("../models/user");
 const { formatRupiah } = require('../helpers/helper.js');
+const nodemailer = require("nodemailer");
 
 class userController {
     static async registerForm(req, res) {
@@ -20,7 +21,6 @@ class userController {
 
             // console.log(req.body,'<<');
 
-
             // const salt =  bcrypt.genSaltSync(10);
             // const hashedPassword =  bcrypt.hashSync(password, salt);
 
@@ -32,8 +32,8 @@ class userController {
             )
 
             await Profile.create({
-                profileName: 'Blm ada mas',
-                phoneNumber: 'masih kosong mas',
+                profileName: 'Your Name',
+                phoneNumber: '+',
                 userId: createUser.id
             })
             res.redirect(`/login`)
@@ -117,14 +117,13 @@ class userController {
                 order: [['itemName', 'ASC']]
             };
 
-            // SEARCH: Filter berdasarkan nama item
+
             if (itemName) {
                 options.where.itemName = {
                     [Op.iLike]: `%${itemName}%`
                 };
             }
 
-            // FILTER: Filter berdasarkan kategori
             if (categoryName) {
                 options.include = [{
                     model: Category,
@@ -133,10 +132,8 @@ class userController {
                 }];
             }
 
-            // Ambil data menu
             let menus = await Item.findAll(options);
 
-            // Ambil semua kategori untuk ditampilkan di filter
             let categories = await Category.findAll();
 
             const toast = req.session.toast;
@@ -157,13 +154,13 @@ class userController {
         try {
             const { itemId } = req.body;
             const item = await Item.findByPk(itemId);
-
+            
             if (!req.session.order) {
                 req.session.order = [];
             }
-
+            
             const existingItem = req.session.order.find(i => i.id === item.id);
-
+            
             if (existingItem) {
                 existingItem.quantity++;
             } else {
@@ -175,13 +172,12 @@ class userController {
                     quantity: 1
                 });
             }
-
-            // Set session untuk toast
+            
             req.session.toast = {
                 type: 'success',
                 message: 'Item berhasil ditambahkan ke keranjang'
             };
-
+            
             res.redirect('/menu');
         } catch (err) {
             console.log(err);
@@ -192,13 +188,12 @@ class userController {
             res.redirect('/menu');
         }
     }
-
     static async updateQuantity(req, res) {
         try {
             const { itemId, action } = req.body;
-
+            
             const item = req.session.order.find(i => i.id === Number(itemId));
-
+            
             if (action === 'increase') {
                 item.quantity++;
             } else if (action === 'decrease') {
@@ -207,31 +202,30 @@ class userController {
                     req.session.order = req.session.order.filter(i => i.id !== Number(itemId));
                 }
             }
-
             res.redirect('/order');
         } catch (err) {
             console.log(err);
             res.send(err);
         }
     }
-
+    
     static async removeFromOrder(req, res) {
         try {
             const { itemId } = req.body;
             req.session.order = req.session.order.filter(i => i.id !== Number(itemId));
-
+            
             req.session.toast = {
                 type: 'danger',
                 message: 'Item berhasil dihapus dari keranjang'
             };
-
+            
             res.redirect('/order');
         } catch (err) {
             console.log(err);
             res.send(err);
         }
     }
-
+    
     static async order(req, res) {
         try {
             const order = req.session.order || [];
@@ -247,122 +241,123 @@ class userController {
                 toast
             });
 
+            // console.log(order, 'order<<');
+            
+
         } catch (err) {
             console.log(err);
             res.send(err);
         }
     }
-
     static async checkout(req, res) {
         try {
-            // Ambil data order dari session
+            // console.log('sampe sini>>><<<');
+            
             const order = req.session.order || [];
-
+            
             if (order.length === 0) {
                 return res.status(400).send("Keranjang belanja kosong");
             }
-
-            // Simpan invoice ke database
-            const newInvoice = await Invoice.create({
-                userId: req.session.userId, // Pastikan user sudah login
-                total: order.reduce((sum, item) => sum + item.price * item.qty, 0),
-                status: "Paid"
-            });
-
-            // Simpan order sementara ke session agar bisa ditampilkan di invoice
-            req.session.lastOrder = req.session.order; // Simpan order sebelum dihapus
-            req.session.order = []; // Kosongkan keranjang belanja setelah checkout
-
-            // Redirect ke halaman invoice
-            res.redirect(`/invoice?id=${newInvoice.id}`);
-        } catch (err) {
-            console.log(err);
-            res.send(err);
-        }
-    }
-
-    static async invoice(req, res) {
-        try {
-            const invoiceId = req.query.id; // Ambil ID invoice dari query parameter
-            // ====================================================================
-            const userId = req.session.userId;
-
-            // Dapatkan nama profil pengguna
-            const profile = await Profile.findOne({ where: { userId } });
-            const profileName = profile.profileName;
-
-            // Tanggal saat ini
-            const now = new Date();
-            const options = { year: 'numeric', month: 'long', day: 'numeric' };
-            const formattedDate = now.toLocaleDateString('en-US', options);
-
+            
+            const total = order.reduce((sum, item) => sum + item.price * item.quantity, 0);
+            
             // Generate kode invoice
-            const year = now.getFullYear();
-            const month = String(now.getMonth() + 1).padStart(2, '0');
-            const day = String(now.getDate()).padStart(2, '0');
-            const datePart = `${year}${month}${day}`;
-
-            const hours = String(now.getHours()).padStart(2, '0');
-            const minutes = String(now.getMinutes()).padStart(2, '0');
-            const seconds = String(now.getSeconds()).padStart(2, '0');
-            const timePart = `${hours}${minutes}${seconds}`;
-
-            let categoryLetter = 'A'; // Default
-            const orderItems = req.session.order || [];
-            if (orderItems.length > 0) {
-                const firstItemId = orderItems[0].id;
-                const firstItem = await Item.findByPk(firstItemId, {
-                    include: Category
-                });
-                if (firstItem && firstItem.Category) {
+            const now = new Date();
+            const datePart = now.toISOString().slice(0, 10).replace(/-/g, '');
+            const timePart = now.toTimeString().slice(0, 8).replace(/:/g, '');
+            
+            let categoryLetter = 'A';
+            
+            if (order.length > 0) {
+                const firstItem = await Item.findByPk(order[0].id, { include: Category });
+                if (firstItem?.Category) {
                     categoryLetter = firstItem.Category.categoryName.charAt(0).toUpperCase();
                 }
             }
             const invoiceCode = `${datePart}-${categoryLetter}-${timePart}`;
 
+            const newInvoice = await Invoice.create({
+                userId: req.session.userId,
+                code: invoiceCode,
+                total: total,
+                status: "Paid"
+            });
 
-            // Buat entri Invoice untuk setiap item
-            for (const item of orderItems) {
-                await Invoice.create({
-                    code: invoiceCode,
-                    quantity: item.quantity,
-                    itemId: item.id,
-                    userId: userId
-                });
-            }
-            // ====================================================================
+            console.log(`Invoice created:`, newInvoice);
+
+            req.session.lastOrder = order;
+            req.session.order = [];
+
+            const transporter = nodemailer.createTransport({
+                service: "Gmail",
+                host: "smtp.gmail.com",
+                port: 465,
+                secure: true,
+                auth: {
+                  user: "mrejaa@gmail.com",
+                  pass: "fpuxqhasttkdgzly",
+                },
+              });
+
+              // app pass : fpux qhas ttkd gzly
+
+              const mailOptions = {
+                from: "mrejaa@gmail.com",
+                to: "anawawim@gmail.com", // <<
+                subject: "Hello from Nodemailer",
+                text: "This is a test email sent using Nodemailer.",
+              };
+
+              transporter.sendMail(mailOptions, (error, info) => {
+                if (error) {
+                  console.error("Error sending email: ", error);
+                } else {
+                  console.log("Email sent: ", info.response);
+                }
+              });
+            // console.log(req.session.userId, '<<')
+
+            res.redirect(`/invoice?id=${newInvoice.id}`);
+        } catch (err) {
+            console.error("Error during checkout:", err);
+            res.status(500).send("Terjadi kesalahan saat checkout");
+        }
+    }
+
+    static async invoice(req, res) {
+        try {
+            const invoiceId = req.query.id;
+
+            // console.log('invoiceId: ',invoiceId);
 
             const invoice = await Invoice.findByPk(invoiceId, {
                 include: [{
                     model: User,
-                    include: [Profile] // Jika ingin menampilkan data profil pengguna
+                    include: [Profile]
                 }]
             });
 
-            if (!invoice) {
-                return res.status(404).send('Invoice not found');
-            }
-
-            // Ambil data pesanan dari session atau database (jika disimpan)
             const order = req.session.lastOrder || [];
 
             const total = order.reduce((sum, item) => sum + (item.price * item.quantity), 0);
 
+            const formattedDate = new Date().toLocaleDateString('id-ID', { year: 'numeric', month: 'long', day: 'numeric' });
+
+            const profileName = invoice.User?.Profile?.profileName || 'Tanpa Nama';
+
             res.render('invoice', {
                 profileName,
                 date: formattedDate,
-                invoiceCode,
-                orderItems,
-                order,
+                invoiceCode: invoice.code,
+                orderItems: order,
                 total,
                 formatRupiah
             });
         } catch (err) {
-            console.log(err);
-            res.send(err)
+            console.error("Error displaying invoice:", err);
+            res.send("Error di Invoice");
         }
     }
-
 
 
 

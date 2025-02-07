@@ -18,6 +18,7 @@ router.get("/logout", userController.logout)
 // USER
 router.get('/', userController.home) //home
 router.get('/menu', userController.menu)// show all item
+// router.get('/menu', userController.menu)// show all item
 
 // router.use(accountAuth)
 router.post('/add-to-order', userController.addToOrder);
@@ -30,10 +31,10 @@ router.get('/order', userController.order);
 // router.get('/profile')
 
 //test order dan checkout
+router.post('/order', userController.checkout); 
 router.post('/checkout', userController.checkout);
 
-router.post('/order', userController.checkout); // Proses checkout
-router.get('/invoice', userController.invoice); // Tampilkan invoice
+router.get('/invoice', userController.invoice); 
 
 // ADMIN
 // router.get('/', adminController.X);
