@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Invoice - Lore Coffee</title>
+  <style>
+    /* Styling dasar untuk email */
+    body { font-family: Arial, sans-serif; }
+    .invoice-container { width: 100%; max-width: 600px; margin: auto; }
+    .header { text-align: center; }
+    table { width: 100%; border-collapse: collapse; }
+    table, th, td { border: 1px solid #ddd; }
+    th, td { padding: 8px; text-align: left; }
+  </style>
+</head>
+<body>
+  <div class="invoice-container">
+    <h2 class="header">Invoice</h2>
+    <p><strong>Name:</strong> <%= profile.profileName %></p>
+    <p>
+      <strong>Date:</strong> 
+      <%= new Date(invoice.createdAt).toLocaleDateString() %> 
+      <%= new Date(invoice.createdAt).toLocaleTimeString() %>
+    </p>
+    <p><strong>Invoice Code:</strong> <%= invoiceCode %></p>
+    <hr>
+    <table>
+      <thead>
+        <tr>
+          <th>Item</th>
+          <th>Qty</th>
+          <th>Price</th>
+          <th>Total</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% order.forEach(item => { %>
+          <tr>
+            <td><%= item.itemName %></td>
+            <td><%= item.quantity %></td>
+            <td><%= formatRupiah(item.price) %></td>
+            <td><%= formatRupiah(item.price * item.quantity) %></td>
+          </tr>
+        <% }); %>
+      </tbody>
+    </table>
+    <h3 style="text-align: right;">Grand Total: <%= formatRupiah(invoice.total) %></h3>
+  </div>
+</body>
+</html>

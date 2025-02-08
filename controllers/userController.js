@@ -278,7 +278,7 @@ class userController {
             // Simpan invoice ke database
             const newInvoice = await Invoice.create({
                 userId: req.session.userId, // Pastikan user sudah login
-                total: order.reduce((sum, item) => sum + item.price * item.qty, 0),
+                total: order.reduce((sum, item) => sum + (item.price * item.quantity), 0),
                 status: "Paid"
             });
 
@@ -286,7 +286,7 @@ class userController {
             req.session.lastOrder = req.session.order; // Simpan order sebelum dihapus
             req.session.order = []; // Kosongkan keranjang belanja setelah checkout
 
-            // Redirect ke halaman invoice
+            // Redirect ke halaman invoice dengan mengirim invoice id
             res.redirect(`/invoice?id=${newInvoice.id}`);
         } catch (err) {
             console.log(err);
@@ -294,90 +294,161 @@ class userController {
         }
     }
 
-    static async invoice(req, res) {
+    static async sendInvoiceEmail(req, res) {
         try {
-            const invoiceId = req.query.id; // Ambil ID invoice dari query parameter
-            // ====================================================================
-            const userId = req.session.userId;
-
-            // Dapatkan nama profil pengguna
-            const profile = await Profile.findOne({ where: { userId } });
-            const profileName = profile.profileName;
-
-            // Tanggal saat ini
-            const now = new Date();
-            const options = { year: 'numeric', month: 'long', day: 'numeric' };
-            const formattedDate = now.toLocaleDateString('en-US', options);
-
-            // Generate kode invoice
-            const year = now.getFullYear();
-            const month = String(now.getMonth() + 1).padStart(2, '0');
-            const day = String(now.getDate()).padStart(2, '0');
-            const datePart = `${year}${month}${day}`;
-
-            const hours = String(now.getHours()).padStart(2, '0');
-            const minutes = String(now.getMinutes()).padStart(2, '0');
-            const seconds = String(now.getSeconds()).padStart(2, '0');
-            const timePart = `${hours}${minutes}${seconds}`;
-
-            let categoryLetter = 'A'; // Default
-            const orderItems = req.session.order || [];
-            if (orderItems.length > 0) {
-                const firstItemId = orderItems[0].id;
-                const firstItem = await Item.findByPk(firstItemId, {
-                    include: Category
-                });
-                if (firstItem && firstItem.Category) {
-                    categoryLetter = firstItem.Category.categoryName.charAt(0).toUpperCase();
-                }
-            }
-            const invoiceCode = `${datePart}-${categoryLetter}-${timePart}`;
-
-
-            // Buat entri Invoice untuk setiap item
-            for (const item of orderItems) {
-                await Invoice.create({
-                    code: invoiceCode,
-                    quantity: item.quantity,
-                    itemId: item.id,
-                    userId: userId
-                });
-            }
-            // ====================================================================
-
-            const invoice = await Invoice.findByPk(invoiceId, {
-                include: [{
-                    model: User,
-                    include: [Profile] // Jika ingin menampilkan data profil pengguna
-                }]
-            });
-
+            const { invoiceId } = req.body;
+            // Ambil invoice dari database
+            const invoice = await Invoice.findByPk(invoiceId);
             if (!invoice) {
-                return res.status(404).send('Invoice not found');
+                return res.status(404).send("Invoice tidak ditemukan");
             }
 
-            // Ambil data pesanan dari session atau database (jika disimpan)
+            // Ambil data user untuk mendapatkan alamat email
+            const user = await User.findByPk(invoice.userId);
+            if (!user) {
+                return res.status(404).send("User tidak ditemukan");
+            }
+
+            // Ambil profile (misalnya untuk menampilkan nama pemesan)
+            const profile = await Profile.findOne({ where: { userId: invoice.userId } });
+
+            // Ambil data order yang digunakan untuk invoice
+            // Catatan: Data order diambil dari session yang sebelumnya disimpan di saat checkout.
             const order = req.session.lastOrder || [];
 
-            const total = order.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+            // --- Membangun Invoice Code ---
+            const orderDate = new Date(invoice.createdAt);
+            const year = orderDate.getFullYear();
+            const month = String(orderDate.getMonth() + 1).padStart(2, '0');
+            const day = String(orderDate.getDate()).padStart(2, '0');
+            const dateStr = `${year}${month}${day}`;
 
-            res.render('invoice', {
-                profileName,
-                date: formattedDate,
-                invoiceCode,
-                orderItems,
+            const hours = String(orderDate.getHours()).padStart(2, '0');
+            const minutes = String(orderDate.getMinutes()).padStart(2, '0');
+            const seconds = String(orderDate.getSeconds()).padStart(2, '0');
+            const timeStr = `${hours}${minutes}${seconds}`;
+
+            let categoryLetter = "X";
+            if (order.length > 0) {
+                const firstOrderItem = order[0];
+                const itemDetail = await Item.findByPk(firstOrderItem.id, {
+                    include: { model: Category }
+                });
+                if (itemDetail && itemDetail.Category && itemDetail.Category.categoryName) {
+                    categoryLetter = itemDetail.Category.categoryName.charAt(0).toUpperCase();
+                }
+            }
+            const invoiceCode = `${dateStr}-${categoryLetter}-${timeStr}`;
+
+            // Render template email (Anda bisa membuat template khusus untuk email, misalnya: invoice_email_template.ejs)
+            // Jika ingin menggunakan template invoice.ejs yang sudah ada, pastikan template tersebut tidak mengandung script browser-only.
+            const templatePath = path.join(__dirname, '../views/invoice_email_template.ejs');
+            const htmlContent = await ejs.renderFile(templatePath, {
+                profile,
+                invoice,
                 order,
-                total,
+                invoiceCode,
                 formatRupiah
             });
+
+            // Konfigurasi NodeMailer (gunakan konfigurasi sesuai dengan penyedia email Anda)
+            let transporter = nodemailer.createTransport({
+                service: 'gmail', // contoh menggunakan Gmail
+                auth: {
+                    user: process.env.EMAIL_USER, // simpan email pengirim di environment variable
+                    pass: process.env.EMAIL_PASS  // simpan password di environment variable
+                }
+            });
+
+            const mailOptions = {
+                from: process.env.EMAIL_USER,
+                to: user.email,
+                subject: `Invoice from Lore Coffee - ${invoiceCode}`,
+                html: htmlContent
+            };
+
+            // Kirim email
+            transporter.sendMail(mailOptions, (error, info) => {
+                if (error) {
+                    console.error(error);
+                    return res.status(500).send("Gagal mengirim email");
+                } else {
+                    console.log('Email sent: ' + info.response);
+                    return res.send("Invoice telah dikirim ke email Anda");
+                }
+            });
         } catch (err) {
-            console.log(err);
-            res.send(err)
+            console.error(err);
+            res.status(500).send(err);
         }
     }
 
 
+    static async invoice(req, res) {
+        try {
+            // Ambil invoice berdasarkan id dari query parameter
+            const invoiceId = req.query.id;
+            const invoice = await Invoice.findByPk(invoiceId);
+            if (!invoice) {
+                return res.status(404).send("Invoice tidak ditemukan");
+            }
 
+            // Dapatkan data profile (untuk nama pemesan) berdasarkan userId pada invoice
+            const profile = await Profile.findOne({ where: { userId: invoice.userId } });
+
+            // Ambil data order dari session (disimpan saat checkout)
+            const order = req.session.lastOrder || [];
+
+            // --- Membangun Invoice Code ---
+            // Format: YYYYMMDD - [A/E/C/M] - HHMMSS
+            // Misal: 20250208-A-143205
+            const orderDate = new Date(invoice.createdAt); // pastikan ini berupa objek Date
+            const year = orderDate.getFullYear();
+            const month = String(orderDate.getMonth() + 1).padStart(2, '0');
+            const day = String(orderDate.getDate()).padStart(2, '0');
+            const dateStr = `${year}${month}${day}`;
+
+            const hours = String(orderDate.getHours()).padStart(2, '0');
+            const minutes = String(orderDate.getMinutes()).padStart(2, '0');
+            const seconds = String(orderDate.getSeconds()).padStart(2, '0');
+            const timeStr = `${hours}${minutes}${seconds}`;
+
+            // Ambil huruf pertama dari categoryName item yang dipesan.
+            // Jika ada lebih dari satu item, ambil dari item pertama.
+            let categoryLetter = "";
+            if (order.length > 0) {
+                const firstOrderItem = order[0];
+                // Cari detail item beserta kategorinya
+                const itemDetail = await Item.findByPk(firstOrderItem.id, {
+                    include: { model: Category }
+                });
+                if (itemDetail && itemDetail.Category && itemDetail.Category.categoryName) {
+                    categoryLetter = itemDetail.Category.categoryName.charAt(0).toUpperCase();
+                }
+            }
+            if (!categoryLetter) {
+                categoryLetter = "X"; // Default jika tidak ditemukan
+            }
+
+            const invoiceCode = `${dateStr}-${categoryLetter}-${timeStr}`;
+
+            // Pastikan invoice.total dihitung sebelum dikirim ke EJS
+            invoice.total = order.reduce((sum, item) => sum + item.price * item.quantity, 0);
+
+
+            // Render view invoice dan kirim data yang diperlukan
+            res.render('invoice', {
+                profile,
+                invoice,
+                order,
+                invoiceCode,
+                formatRupiah
+            });
+        } catch (err) {
+            console.log(err);
+            res.send(err);
+        }
+    }
 
     // static async x(req, res) {
     //     try {

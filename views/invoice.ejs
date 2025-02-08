@@ -1,73 +1,65 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Invoice - Lore Coffee</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Invoice - Lore Coffee</title>
+  <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="bg-gray-100">
-    <!-- Header -->
-    <header class="bg-white shadow-md sticky top-0 z-10">
-        <div class="container mx-auto flex justify-between items-center p-4">
-            <h1 class="text-xl font-bold text-gray-800">Lore Coffee</h1>
-            <nav class="hidden md:flex space-x-6">
-                <a href="/" class="hover:text-gray-500">Home</a>
-                <a href="/menu" class="hover:text-gray-500">Menu</a>
-                <a href="/order" class="hover:text-gray-500">Order</a>
-                <a href="/profile" class="hover:text-gray-500">Profile</a>
-            </nav>
-            <button class="md:hidden" id="menu-button">
-                <svg id="menu-icon" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg>
-            </button>
-        </div>
-    </header>
-    
-    <!-- Content -->
-    <main class="container mx-auto p-6">
-        <!-- Invoice Section -->
-        <section class="bg-white p-6 rounded-lg shadow-md">
+  <div class="container mx-auto p-6">
+    <div class="bg-white p-6 rounded shadow">
+      <h1 class="text-3xl font-bold mb-4">Invoice</h1>
+      <!-- Informasi Pemesan dan Invoice -->
+      <div class="mb-4">
+        <p><strong>Name:</strong> <%= profile.profileName %></p>
+        <p>
+          <strong>Date:</strong> 
+          <%= new Date(invoice.createdAt).toLocaleDateString() %> 
+          <%= new Date(invoice.createdAt).toLocaleTimeString() %>
+        </p>
+        <p><strong>Invoice Code:</strong> <%= invoiceCode %></p>
+      </div>
+      
+      <!-- Tabel Order -->
+      <div class="mb-4">
+        <table class="min-w-full bg-white">
+          <thead>
+            <tr>
+              <th class="py-2 border-b text-left">Item</th>
+              <th class="py-2 border-b text-center">Qty</th>
+              <th class="py-2 border-b text-right">Price</th>
+              <th class="py-2 border-b text-right">Total</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% order.forEach(item => { %>
+              <tr>
+                <td class="py-2 border-b"><%= item.itemName %></td>
+                <td class="py-2 border-b text-center"><%= item.quantity %></td>
+                <td class="py-2 border-b text-right"><%= formatRupiah(item.price) %></td>
+                <td class="py-2 border-b text-right"><%= formatRupiah(item.price * item.quantity) %></td>
+              </tr>
+            <% }); %>
+          </tbody>
+        </table>
+      </div>
 
-            <p><strong>Invoice No :</strong> <%= invoiceCode %></p>
-            <p class="text-gray-700 mt-2">Thank you for your order. Here are the details:</p>
-            
-            <!-- Order Details -->
-            <div class="mt-4 space-y-4">
-                <% if (order.length > 0) { %>
-                    <% order.forEach(item => { %>
-                        <div class="flex items-center justify-between bg-gray-50 p-4 rounded-lg shadow">
-                            <div class="flex items-center space-x-4">
-                                <img src="<%= item.imageURL %>" alt="<%= item.itemName %>" class="w-16 h-16 object-cover rounded-lg">
-                                <div>
-                                    <h3 class="text-lg font-semibold"><%= item.itemName %></h3>
-                                    <p class="text-gray-600">Quantity: <%= item.quantity %></p>
-                                </div>
-                            </div>
-                            <span class="text-lg font-bold"><%= formatRupiah(item.price * item.quantity) %></span>
-                        </div>
-                    <% }) %>
-                <% } else { %>
-                    <p class="text-center py-4 text-gray-500">No items in the order</p>
-                <% } %>
-            </div>
-            
-            <!-- Total and Payment Information -->
-            <div class="mt-6">
-                <h3 class="text-xl font-bold">Total: <%= formatRupiah(total) %></h3>
-                <div class="mt-4">
-                    <h4 class="text-lg font-semibold">Payment Information</h4>
-                    <p class="text-gray-700">Please transfer the total amount to the following account:</p>
-                    <div class="bg-gray-50 p-4 rounded-lg mt-2">
-                        <p class="text-gray-700"><strong>Bank:</strong> BCA</p>
-                        <p class="text-gray-700"><strong>Account Number:</strong> 1234 5678 9012</p>
-                        <p class="text-gray-700"><strong>Account Holder:</strong> Lore Coffee</p>
-                    </div>
-                </div>
-                <div class="mt-6 text-right">
-                    <button class="bg-green-500 text-white px-6 py-2 rounded-lg shadow-md hover:bg-green-600" onclick="window.print()">Print Invoice</button>
-                </div>
-            </div>
-        </section>
-    </main>
-</body>
-</html>
+      <!-- Total Keseluruhan -->
+      <div class="text-right mb-6">
+        <h2 class="text-xl font-bold">Grand Total: <%= formatRupiah(invoice.total) %></h2>
+      </div>
+
+      <!-- Tombol Send Invoice ke Email -->
+<div class="text-right">
+    <form action="/send-invoice-email" method="POST">
+      <!-- Sertakan id invoice sebagai hidden input -->
+      <input type="hidden" name="invoiceId" value="<%= invoice.id %>">
+      <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded">
+        Send Invoice via Email
+      </button>
+    </form>
+  </div>
+  
+
+      
