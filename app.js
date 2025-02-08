@@ -17,13 +17,9 @@ app.use(session({
   }
 }))
 
-//BODY PARSER
 app.use(express.urlencoded({ extended: false }));
-
-//TEMPLATE ENGINE
 app.set('view engine', 'ejs')
 
-//MIDDLEWARE
 app.use(router);
 
 app.listen(port, () => {

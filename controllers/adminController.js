@@ -52,7 +52,6 @@ class adminController {
         }
     }
 
-    // =======================
     static async homeAdmin(req, res) {
         try {
 
@@ -113,7 +112,6 @@ class adminController {
         }
     }
 
-
     static async getProfile(req, res) {
         try {
             const userId = req.session.userId;
@@ -133,7 +131,6 @@ class adminController {
             res.send(err);
         }
     }
-
 
     static async showAdminAddMenu(req, res) {
         try {
@@ -219,7 +216,7 @@ class adminController {
                 where: { id: +id }
             });
 
-            // Set session untuk notifikasi
+            // Set notif
             req.session.toast = {
                 type: 'success',
                 message: 'Item berhasil dihapus dari menu'
@@ -229,7 +226,7 @@ class adminController {
         } catch (err) {
             console.log(err);
 
-            // Set session untuk notifikasi error
+            // Set notif
             req.session.toast = {
                 type: 'danger',
                 message: 'Gagal menghapus item: ' + err.message
@@ -264,20 +261,16 @@ class adminController {
 
             const { userName, email, password, profileName, phoneNumber } = req.body;
 
-            // Temukan user berdasarkan id
             const user = await User.findOne({
                 where: { id: +id },
                 include: [{ model: Profile }]
             });
 
-
-            // Update user data
             await User.update(
                 { userName, email, password },
                 { where: { id: +id } }
             );
 
-            // Update profile data
             await Profile.update(
                 { profileName, phoneNumber },
                 { where: { id: user.Profile.id } }
@@ -290,15 +283,14 @@ class adminController {
         }
     }
 
-    static async X(req, res) {
-        try {
-            res.send('X NOT YET')
-        } catch (err) {
-            console.log(err);
-            res.send(err)
-        }
-    }
-
+    // static async X(req, res) {
+    //     try {
+    //         res.send('X NOT YET')
+    //     } catch (err) {
+    //         console.log(err);
+    //         res.send(err)
+    //     }
+    // }
 }
 
 module.exports = adminController

@@ -16,6 +16,9 @@ module.exports = (sequelize, DataTypes) => {
         foreignKey: 'userId'
       });
     }
+    get named() {
+      return `Sobat ${this.profileName}`;
+    }
   }
   Profile.init({
     profileName: DataTypes.STRING,

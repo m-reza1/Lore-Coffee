@@ -21,6 +21,9 @@ module.exports = (sequelize, DataTypes) => {
         foreignKey: 'itemId'
       });
     }
+    get invoiceCode() {
+      return this.code `Lore-${quantity}-${userId}`;
+    }
   }
   Invoice.init({
     code: DataTypes.STRING,
