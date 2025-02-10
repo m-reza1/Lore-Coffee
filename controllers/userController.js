@@ -310,8 +310,8 @@ class userController {
                 port: 465,
                 secure: true,
                 auth: {
-                  user: "mrejaa@gmail.com",
-                  pass: "fpuxqhasttkdgzly",
+                  user: "email",
+                  pass: "password",
                 },
               });
 
