@@ -31,10 +31,13 @@ router.get('/order', userController.order);
 // router.get('/profile')
 
 //test order dan checkout
-router.post('/order', userController.checkout); 
+
+router.get('/checkout', userController.checkout);
+
 router.post('/checkout', userController.checkout);
 
 router.post('/order', userController.checkout); // Proses checkout
+router.post('/send-invoice-email', userController.sendInvoiceEmail);
 router.get('/invoice', accountAuth, userController.invoice); // Tampilkan invoice
 
 // ADMIN
