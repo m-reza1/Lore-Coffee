@@ -1,7 +1,6 @@
 const { Model, Op } = require("sequelize");
 const { User, Profile, Category, Item, Invoice } = require("../models/index");
-const bcrypt = require('bcryptjs'); // Import bcryptjs
-const accountAuth = require('../middleware/auth');
+const bcrypt = require('bcryptjs');
 const user = require("../models/user");
 const { formatRupiah } = require('../helpers/helper.js');
 const nodemailer = require("nodemailer");
@@ -31,7 +30,7 @@ class userController {
             }, { returning: true });
 
             await Profile.create({
-                profileName: 'Your Name',
+                profileName: 'Sobat',
                 phoneNumber: '+',
                 userId: createUser.id
             });
@@ -40,25 +39,23 @@ class userController {
         } catch (err) {
             let errors = [];
 
-            // Handle Sequelize validation errors
             if (err.name === 'SequelizeValidationError') {
                 errors = err.errors.map(e => e.message);
             }
-            // Handle unique constraint errors
+
             else if (err.name === 'SequelizeUniqueConstraintError') {
                 err.errors.forEach(e => {
                     if (e.path === 'userName') errors.push('Username already exists');
                     if (e.path === 'email') errors.push('Email already registered');
                 });
             }
-            // Handle other errors
             else {
                 errors.push('Registration failed. Please try again.');
             }
 
             res.render('register', {
                 errors,
-                oldInput: req.body // Untuk mempertahankan input yang sudah dimasukkan
+                oldInput: req.body
             });
         }
     }
@@ -86,7 +83,6 @@ class userController {
             const isValidPassword = bcrypt.compareSync(password, user.password);
 
             // console.log(isValidPassword);
-
 
             if (!isValidPassword) {
                 const error = 'Invalid username or password';
@@ -169,6 +165,7 @@ class userController {
             res.send(err)
         }
     }
+    
     static async addToOrder(req, res) {
         try {
             const { itemId } = req.body;
@@ -261,7 +258,6 @@ class userController {
             });
 
             // console.log(order, 'order<<');
-            
 
         } catch (err) {
             console.log(err);
@@ -303,7 +299,7 @@ class userController {
                 status: "Paid"
             });
 
-            console.log(`Invoice created:`, newInvoice);
+            // console.log(`Invoice created:`, newInvoice);
 
             req.session.lastOrder = order;
             req.session.order = [];
@@ -323,7 +319,7 @@ class userController {
 
               const mailOptions = {
                 from: "mrejaa@gmail.com",
-                to: "anawawim@gmail.com", // <<
+                to: "anawawim@gmail.com", // << user.email
                 subject: "Hello from Nodemailer",
                 text: "This is a test email sent using Nodemailer.",
               };
@@ -332,7 +328,7 @@ class userController {
                 if (error) {
                   console.error("Error sending email: ", error);
                 } else {
-                  console.log("Email sent: ", info.response);
+                  console.log("Email sent: Testing");
                 }
               });
             // console.log(req.session.userId, '<<')
@@ -342,8 +338,8 @@ class userController {
 
             res.redirect(`/invoice?id=${newInvoice.id}`);
         } catch (err) {
-            console.error("Error during checkout:", err);
-            res.status(500).send("Terjadi kesalahan saat checkout");
+            console.error(err);
+            res.send(err);
         }
     }
 
@@ -496,15 +492,18 @@ class userController {
 
             // Render view invoice dan kirim data yang diperlukan
             res.render('invoice', {
-                profile,
-                invoice,
-                order,
-                invoiceCode,
+
+                profileName,
+                date: formattedDate,
+                invoiceCode: Invoice.invoiceCode(),
+                orderItems: order,
+                total,
                 formatRupiah
             });
         } catch (err) {
-            console.log(err);
-            res.send(err);
+            console.error(err);
+            res.send("Error di Invoice");
+
         }
     }
 
